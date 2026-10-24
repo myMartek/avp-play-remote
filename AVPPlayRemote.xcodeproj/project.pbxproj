@@ -1,0 +1,384 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0D8577B7DF5B01B8EA9B0346 /* GameDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 060E7D2880DA01B8BA9AB21C /* GameDetail.swift */; };
+		3B7FB587A803A44CBF0BC625 /* UpdatesScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 199670FC19D31866A2458B8F /* UpdatesScreen.swift */; };
+		451092428E6CB10C0B5E15D2 /* AVPPlayRemoteApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 658FA808E82FA6041A080BE6 /* AVPPlayRemoteApp.swift */; };
+		46837A6946DD6FB15F24B624 /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 494D9EBF4CBE4DCAA57C54EE /* Common.swift */; };
+		4904D1069DDB1563D3072164 /* JobsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D8AAE275A6B4E8480A3E1D8 /* JobsScreen.swift */; };
+		5842A1D153785699F3A479ED /* GamesScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6CE85673FCD6D411F98B1A7 /* GamesScreen.swift */; };
+		67129937A4BB15852F571C85 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B9703A6574716F160C6D0DC6 /* Assets.xcassets */; };
+		7DE9813F6720AAD0B233AC49 /* RemoteProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA8731A8E2C4089EE0C625DF /* RemoteProtocol.swift */; };
+		8571AD8D153D09E1A32C412E /* RemoteClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8BCB54F8A77D293D6152B6B /* RemoteClient.swift */; };
+		BE7CC9BE02F01B35CE244597 /* Support.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D4BDE0A14800BEA6141004 /* Support.swift */; };
+		C50DF965CEB6D3293C5D664C /* MacScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36F2F02DAF6BB23430314F28 /* MacScreen.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		060E7D2880DA01B8BA9AB21C /* GameDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameDetail.swift; sourceTree = "<group>"; };
+		199670FC19D31866A2458B8F /* UpdatesScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdatesScreen.swift; sourceTree = "<group>"; };
+		1D8AAE275A6B4E8480A3E1D8 /* JobsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobsScreen.swift; sourceTree = "<group>"; };
+		2D8B19EF343306A7786EB42B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		36F2F02DAF6BB23430314F28 /* MacScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacScreen.swift; sourceTree = "<group>"; };
+		494D9EBF4CBE4DCAA57C54EE /* Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
+		52D4BDE0A14800BEA6141004 /* Support.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Support.swift; sourceTree = "<group>"; };
+		658FA808E82FA6041A080BE6 /* AVPPlayRemoteApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVPPlayRemoteApp.swift; sourceTree = "<group>"; };
+		80D87B9C1189A55351333DA7 /* AVPPlayRemote.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = AVPPlayRemote.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B9703A6574716F160C6D0DC6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		C6CE85673FCD6D411F98B1A7 /* GamesScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamesScreen.swift; sourceTree = "<group>"; };
+		C8BCB54F8A77D293D6152B6B /* RemoteClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteClient.swift; sourceTree = "<group>"; };
+		CA8731A8E2C4089EE0C625DF /* RemoteProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteProtocol.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		00F2008FD3DC01D344DB44E7 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				658FA808E82FA6041A080BE6 /* AVPPlayRemoteApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		4735A0C1A10DEBCFF95FEC26 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				2D8B19EF343306A7786EB42B /* Info.plist */,
+				00F2008FD3DC01D344DB44E7 /* App */,
+				D4D03495C86DFFBA509C49B3 /* Model */,
+				A324C2DAE6D946B8020E9149 /* Shared */,
+				5A4C224F0529ACCB855596F2 /* Views */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		4B95EBAAA66928CCAB3048A8 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				B9703A6574716F160C6D0DC6 /* Assets.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		5A4C224F0529ACCB855596F2 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				494D9EBF4CBE4DCAA57C54EE /* Common.swift */,
+				060E7D2880DA01B8BA9AB21C /* GameDetail.swift */,
+				C6CE85673FCD6D411F98B1A7 /* GamesScreen.swift */,
+				1D8AAE275A6B4E8480A3E1D8 /* JobsScreen.swift */,
+				36F2F02DAF6BB23430314F28 /* MacScreen.swift */,
+				199670FC19D31866A2458B8F /* UpdatesScreen.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A324C2DAE6D946B8020E9149 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				CA8731A8E2C4089EE0C625DF /* RemoteProtocol.swift */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		CC6FF20F95C71F3054112AC8 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				80D87B9C1189A55351333DA7 /* AVPPlayRemote.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		D4D03495C86DFFBA509C49B3 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				C8BCB54F8A77D293D6152B6B /* RemoteClient.swift */,
+				52D4BDE0A14800BEA6141004 /* Support.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		D6A29ADC420E9D5B7B39AE75 = {
+			isa = PBXGroup;
+			children = (
+				4B95EBAAA66928CCAB3048A8 /* Resources */,
+				4735A0C1A10DEBCFF95FEC26 /* Sources */,
+				CC6FF20F95C71F3054112AC8 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		1A1615D94ECFF18A863445AB /* AVPPlayRemote */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3BB6F88E9F161D0C2523EB51 /* Build configuration list for PBXNativeTarget "AVPPlayRemote" */;
+			buildPhases = (
+				EA40A2D6BE608169E1B56FF1 /* Sources */,
+				22B52E86E6859703830440C7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AVPPlayRemote;
+			packageProductDependencies = (
+			);
+			productName = AVPPlayRemote;
+			productReference = 80D87B9C1189A55351333DA7 /* AVPPlayRemote.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		82C638D50C6025B30395BB35 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					1A1615D94ECFF18A863445AB = {
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 7C7DC432135A109C2F0A3B22 /* Build configuration list for PBXProject "AVPPlayRemote" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = D6A29ADC420E9D5B7B39AE75;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = CC6FF20F95C71F3054112AC8 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				1A1615D94ECFF18A863445AB /* AVPPlayRemote */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		22B52E86E6859703830440C7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				67129937A4BB15852F571C85 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		EA40A2D6BE608169E1B56FF1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				451092428E6CB10C0B5E15D2 /* AVPPlayRemoteApp.swift in Sources */,
+				46837A6946DD6FB15F24B624 /* Common.swift in Sources */,
+				0D8577B7DF5B01B8EA9B0346 /* GameDetail.swift in Sources */,
+				5842A1D153785699F3A479ED /* GamesScreen.swift in Sources */,
+				4904D1069DDB1563D3072164 /* JobsScreen.swift in Sources */,
+				C50DF965CEB6D3293C5D664C /* MacScreen.swift in Sources */,
+				8571AD8D153D09E1A32C412E /* RemoteClient.swift in Sources */,
+				7DE9813F6720AAD0B233AC49 /* RemoteProtocol.swift in Sources */,
+				BE7CC9BE02F01B35CE244597 /* Support.swift in Sources */,
+				3B7FB587A803A44CBF0BC625 /* UpdatesScreen.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		30C66AC720CB104DFBE11D04 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = Sources/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.mymartek.avpplay.remote;
+				PRODUCT_NAME = AVPPlayRemote;
+				SDKROOT = xros;
+				TARGETED_DEVICE_FAMILY = 7;
+			};
+			name = Release;
+		};
+		6ED5E06002EF595A0356CF42 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MARKETING_VERSION = 0.1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = xros;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				XROS_DEPLOYMENT_TARGET = 26.0;
+			};
+			name = Debug;
+		};
+		8E4247D3D77DB280CD0E25DC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = Sources/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.mymartek.avpplay.remote;
+				PRODUCT_NAME = AVPPlayRemote;
+				SDKROOT = xros;
+				TARGETED_DEVICE_FAMILY = 7;
+			};
+			name = Debug;
+		};
+		95DFB34876385B4DEAF7016C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MARKETING_VERSION = 0.1.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = xros;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				XROS_DEPLOYMENT_TARGET = 26.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		3BB6F88E9F161D0C2523EB51 /* Build configuration list for PBXNativeTarget "AVPPlayRemote" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8E4247D3D77DB280CD0E25DC /* Debug */,
+				30C66AC720CB104DFBE11D04 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		7C7DC432135A109C2F0A3B22 /* Build configuration list for PBXProject "AVPPlayRemote" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6ED5E06002EF595A0356CF42 /* Debug */,
+				95DFB34876385B4DEAF7016C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 82C638D50C6025B30395BB35 /* Project object */;
+}

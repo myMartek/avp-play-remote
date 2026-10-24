@@ -1,0 +1,41 @@
+name: AVPPlayRemote
+options:
+  bundleIdPrefix: io.github.mymartek
+  deploymentTarget:
+    visionOS: "26.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+targets:
+  AVPPlayRemote:
+    type: application
+    platform: visionOS
+    sources:
+      - Sources
+      - Resources
+    info:
+      path: Sources/Info.plist
+      properties:
+        CFBundleDisplayName: AVP Play Remote
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        CFBundleDevelopmentRegion: en
+        CFBundleLocalizations: [en, de]
+        NSLocalNetworkUsageDescription: AVP Play Remote looks for AVP Play on the Macs in your network to show and install your games.
+        NSBonjourServices: [_avpplay._tcp]
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: true
+          UIApplicationPreferredDefaultSceneSessionRole: UIWindowSceneSessionRoleApplication
+          UISceneConfigurations: {}
+        ITSAppUsesNonExemptEncryption: false
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: io.github.mymartek.avpplay.remote
+        PRODUCT_NAME: AVPPlayRemote
+        CODE_SIGN_STYLE: Automatic
+        TARGETED_DEVICE_FAMILY: "7"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ENABLE_PREVIEWS: YES
