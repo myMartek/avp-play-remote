@@ -3,3 +3,10 @@ build/
 DerivedData/
 *.xcuserstate
 xcuserdata/
+.env*
+vendor/
+.bundle/
+Gemfile
+Gemfile.lock
+# Signing and store upload stay local.
+fastlane/

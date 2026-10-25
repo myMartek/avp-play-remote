@@ -64,6 +64,13 @@ Debug builds understand a few launch arguments for the simulator, where nothing 
 `-AVPRemoteTab games|updates|jobs|mac`, `-AVPRemoteGame <id>`, `-AVPRemoteConnect <host>` and
 `-AVPRemotePairCode <code>`. A debug build of AVP Play takes a fixed pairing code from `AVPPLAY_REMOTE_CODE`.
 
+## Store screenshots
+
+They come from the demo mode in the simulator (3840×2160): launch a debug build with
+`-AVPRemoteDemo YES -AVPRemoteTab games|updates|jobs|settings`, `-AVPRemoteGame neonrhythm`,
+`-AVPRemoteJob demo-starfall-job` and `-AppleLanguages "(de)"` or `"(en)"`, then `xcrun simctl io <device> screenshot`.
+The App Store texts are in `AppStore/`.
+
 ## Licence
 
 MIT, see [LICENSE](LICENSE).

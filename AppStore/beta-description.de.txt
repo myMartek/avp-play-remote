@@ -1,0 +1,1 @@
+AVP Play Remote steuert AVP Play auf deinem Mac von der Apple Vision Pro aus: Spiele ansehen, installieren und aktualisieren, Aufträge verfolgen. Braucht AVP Play für den Mac (kostenlos, https://github.com/myMartek/avp-play). „Ohne Mac ausprobieren“ im Tab „Mac“ zeigt eine Demo.
