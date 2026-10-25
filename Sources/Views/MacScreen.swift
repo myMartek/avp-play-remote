@@ -36,6 +36,19 @@ struct MacScreen: View {
                 }
 
                 SwiftUI.Section {
+                    if client.demo {
+                        Button(L("End the Demo", "Demo beenden"), systemImage: "xmark.circle") { client.stopDemo() }
+                    } else {
+                        Button(L("Try Without a Mac", "Ohne Mac ausprobieren"), systemImage: "play.rectangle") { client.startDemo() }
+                    }
+                } header: {
+                    Text("Demo")
+                } footer: {
+                    Text(L("Shows made-up games on a made-up Mac, to look around. Nothing is installed.",
+                           "Zeigt erfundene Spiele auf einem erfundenen Mac, zum Umsehen. Installiert wird nichts."))
+                }
+
+                SwiftUI.Section {
                     if client.known.isEmpty {
                         Text(L("No Mac paired yet.", "Noch kein Mac gekoppelt.")).foregroundStyle(.secondary)
                     }

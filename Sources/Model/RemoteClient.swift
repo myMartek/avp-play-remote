@@ -66,6 +66,8 @@ final class RemoteClient {
     private(set) var busy: Set<String> = []
     /// Das lokale Netz ist für diese App nicht freigegeben.
     private(set) var localNetworkDenied = false
+    /// Der Demo-Modus: ein erfundener Mac mit erfundenen Spielen (`Demo`).
+    private(set) var demo = false
     /// Öffnet das Blatt zum Koppeln.
     var pairingTarget: PairingTarget?
     /// Eine Meldung, die als Hinweis erscheint (Antwort des Macs auf eine Bitte).
@@ -89,7 +91,7 @@ final class RemoteClient {
         didSet { UserDefaults.standard.set(preferredId, forKey: "lastMac") }
     }
 
-    var connectedMac: KnownMac? { link?.welcomed == true ? link?.mac : nil }
+    var connectedMac: KnownMac? { demo ? Demo.mac : link?.welcomed == true ? link?.mac : nil }
     var connectingMac: KnownMac? { link?.mac }
 
     // MARK: Leben der App
@@ -101,6 +103,9 @@ final class RemoteClient {
         if on {
             startBrowsing()
             attempt = 0
+            #if DEBUG
+            if UserDefaults.standard.bool(forKey: "AVPRemoteDemo"), !demo { startDemo() }
+            #endif
             #if DEBUG
             // Zum Testen: `-AVPRemoteConnect 127.0.0.1` verbindet wie eine eingetippte Adresse (mit
             // `-AVPRemotePairCode` auch gleich gekoppelt).
@@ -172,7 +177,7 @@ final class RemoteClient {
             }
         }
         // Noch nie gekoppelt und genau ein Mac im Netz: gleich nach dem Code fragen – einmal.
-        if known.isEmpty, macs.count == 1, pairingTarget == nil, !offeredPairing {
+        if !demo, known.isEmpty, macs.count == 1, pairingTarget == nil, !offeredPairing {
             offeredPairing = true
             pairingTarget = PairingTarget(name: macs[0].name, endpoint: macs[0].endpoint, pairPort: macs[0].pairPort)
             #if DEBUG
@@ -191,7 +196,7 @@ final class RemoteClient {
     /// Wählt einen gekoppelten Mac und verbindet: der bevorzugte, wenn er im Netz ist oder eine Adresse bekannt ist,
     /// sonst reihum die anderen.
     func connectAutomatically() {
-        guard active, link == nil, retryTask == nil else { return }
+        guard active, !demo, link == nil, retryTask == nil else { return }
         let reachable = known.filter { isFound($0) || $0.host != nil }
         guard !reachable.isEmpty else {
             state = .searching
@@ -383,6 +388,10 @@ final class RemoteClient {
     /// Eine Bitte aus einem Knopf: dreht, solange sie läuft, und zeigt, was der Mac dagegen hatte.
     func perform(_ request: RemoteRequest, key: String) {
         guard !busy.contains(key) else { return }
+        if demo {
+            message = L("This is the demo – with a paired Mac, AVP Play would do this now.", "Das ist die Demo – mit einem gekoppelten Mac würde AVP Play das jetzt tun.")
+            return
+        }
         busy.insert(key)
         Task {
             let error = await send(request)
@@ -391,11 +400,45 @@ final class RemoteClient {
         }
     }
 
+    // MARK: Demo
+
+    /// Zeigt erfundene Spiele, ohne Mac. Eine bestehende Verbindung endet dafür.
+    func startDemo() {
+        retryTask?.cancel()
+        retryTask = nil
+        disconnect()
+        demo = true
+        pairingTarget = nil
+        server = Demo.server
+        games = Demo.games
+        filters = Demo.filters
+        status = Demo.status
+        onlineCatalog = true
+        horizonPlusKnown = false
+        state = .connected
+        for id in openPanels.keys { panels[id] = Demo.panel(id, games: games) }
+    }
+
+    func stopDemo() {
+        guard demo else { return }
+        demo = false
+        server = nil
+        games = []
+        filters = []
+        status = nil
+        panels = [:]
+        covers = [:]
+        state = .searching
+        attempt = 0
+        connectAutomatically()
+    }
+
     // MARK: Seiten
 
     /// Eine Ansicht zeigt eine Seite: Der Mac schickt sie und jede Änderung, bis sie wieder geschlossen wird.
     func openPanel(_ id: String) {
         openPanels[id, default: 0] += 1
+        if demo { panels[id] = Demo.panel(id, games: games); return }
         guard openPanels[id] == 1, let link, link.welcomed else { return }
         link.channel.send(RemoteClientMessage(seq: nextSeq(), request: .openPanel(id: id)))
     }
@@ -410,19 +453,26 @@ final class RemoteClient {
 
     /// Ein Schalter, eine Wahl oder ein Knopf einer Seite.
     func act(_ panel: String, _ item: String, value: String? = nil) {
+        if demo, var page = panels[panel] {
+            Demo.apply(item, value: value, to: &page)
+            panels[panel] = page
+            if item == "favourite", let index = games.firstIndex(where: { "game:\($0.id)" == panel }) { games[index].favourite = value == "1" }
+            return
+        }
         perform(.panelAction(panel: panel, item: item, value: value), key: "\(panel)/\(item)")
     }
 
     // MARK: Bilder
 
     func cover(for game: RemoteGame) -> UIImage? {
+        if demo { return game.coverKey.flatMap { UIImage(named: $0) } }
         guard let key = game.coverKey, let entry = covers[game.id], entry.key == key else { return nil }
         return entry.image
     }
 
     /// Holt das Bild eines Spiels: von der Platte, sonst vom Mac.
     func loadCover(_ game: RemoteGame) {
-        guard let key = game.coverKey, covers[game.id]?.key != key else { return }
+        guard !demo, let key = game.coverKey, covers[game.id]?.key != key else { return }
         if let data = CoverDisk.read(key), let image = UIImage(data: data) {
             covers[game.id] = CoverEntry(key: key, image: image)
             return

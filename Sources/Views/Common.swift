@@ -38,6 +38,7 @@ struct ConnectionGate<Content: View>: View {
                     }
                 }
                 HStack(spacing: 16) {
+                    Button(L("Try Without a Mac", "Ohne Mac ausprobieren")) { client.startDemo() }
                     Button(L("Show Macs", "Macs zeigen")) { section = .mac }
                     if !client.known.isEmpty {
                         Button(L("Try Again", "Erneut versuchen")) { client.reconnect() }.buttonStyle(.borderedProminent)
@@ -93,6 +94,10 @@ struct MacMenu: View {
 
     var body: some View {
         Menu {
+            if client.demo {
+                Button(L("End the Demo", "Demo beenden"), systemImage: "xmark.circle") { client.stopDemo() }
+                Divider()
+            }
             ForEach(client.known) { mac in
                 Button {
                     client.switchTo(mac)

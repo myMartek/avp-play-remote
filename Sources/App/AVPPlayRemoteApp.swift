@@ -48,7 +48,7 @@ struct RootView: View {
         .sheet(item: $client.pairingTarget) { target in
             PairingSheet(target: target)
         }
-        .alert(L("The Mac says", "Der Mac meldet"), isPresented: Binding(get: { client.message != nil }, set: { if !$0 { client.message = nil } })) {
+        .alert(client.demo ? "Demo" : L("The Mac says", "Der Mac meldet"), isPresented: Binding(get: { client.message != nil }, set: { if !$0 { client.message = nil } })) {
             Button("OK") { client.message = nil }
         } message: {
             Text(client.message ?? "")

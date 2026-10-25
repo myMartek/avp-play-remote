@@ -1,0 +1,26 @@
+AVP Play Remote ist die Fernbedienung für AVP Play auf deinem Mac. Setz die Vision Pro auf, öffne die App – und steuere von dort aus, was dein Mac für dich lädt, baut und installiert.
+
+WICHTIG: Diese App braucht einen Mac mit AVP Play
+AVP Play ist eine kostenlose, quelloffene App für macOS. Sie baut VR-Spiele, die du bereits besitzt, für die Apple Vision Pro und installiert sie mit deinem eigenen Apple-Entwicklerkonto. AVP Play Remote macht nichts davon selbst: Die Arbeit erledigt immer der Mac. Den Download-Link für den Mac findest du in der App unter „Mac“ – mit „An den Mac senden“ kommt er per AirDrop direkt auf deinen Mac.
+
+Was du tun kannst
+• Deine Spiele durchsehen – mit Titelbild, Stand auf der Vision Pro und denselben Filtern wie auf dem Mac
+• Spiele installieren, aktualisieren oder nur auf den Mac laden
+• Alle Aktualisierungen mit einem Tipp starten
+• Aufträge verfolgen: Schritte, Fortschrittsbalken mit Restzeit und Verlauf
+• Aufträge fortsetzen, abbrechen und die Liste leeren
+• Auf der Seite eines Spiels Favoriten, eigene Filter, Fassung, Toolchain, Spielstände und wählbare Inhalte einstellen
+• Einrichtung und Einstellungen des Macs ansehen und ändern
+
+So einfach geht es
+1. Auf dem Mac in AVP Play „Fernbedienung“ einschalten.
+2. Die App findet den Mac im WLAN von selbst. Einmal mit dem sechsstelligen Code koppeln – danach verbindet sie sich automatisch.
+3. Mehrere Macs? In der Leiste wechseln. Kein Bonjour im Netz? Die IP-Adresse eintippen.
+
+Sicher und privat
+Alles bleibt in deinem lokalen Netz. Die Verbindung ist mit einem Schlüssel verschlüsselt, den nur deine Vision Pro und dein Mac kennen. Die App sammelt keine Daten und spricht mit keinem Server im Internet.
+
+Ohne Mac ausprobieren
+Unter „Mac“ zeigt „Ohne Mac ausprobieren“ einen Demo-Mac mit erfundenen Spielen.
+
+AVP Play ist ein unabhängiges Open-Source-Projekt und steht in keiner Verbindung zu Apple, Meta oder Spieleherstellern.

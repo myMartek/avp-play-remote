@@ -1,0 +1,13 @@
+AVP Play Remote is a companion app. It remote-controls "AVP Play", a free, open-source macOS app (MIT licence, https://github.com/myMartek/avp-play). The Mac app is REQUIRED for the real functionality: the visionOS app itself never downloads, builds or installs anything – it only sends requests to the Mac over the local network and shows the Mac's state.
+
+HOW TO TEST WITHOUT A MAC (recommended)
+Open the "Mac" tab (laptop icon, last tab) and tap "Try Without a Mac". This shows a demo Mac with made-up sample games and covers, so every screen can be reviewed: Games (with filters), a game's page (options), Updates, Jobs (job page with progress bars and log), Setup and Settings. Nothing is installed in demo mode. "End the Demo" is in the same place and in the Mac menu in the toolbar.
+
+HOW TO TEST WITH A MAC
+1. On a Mac with macOS 14 or later, download AVP Play from https://github.com/myMartek/avp-play/releases/latest (signed with Developer ID and notarised) and open it.
+2. In AVP Play's sidebar choose "Remote Control" and switch it on. A six-digit pairing code is shown there.
+3. Make sure the Mac and the Vision Pro are on the same Wi-Fi. Open AVP Play Remote; allow local network access. The app finds the Mac via Bonjour and asks for the code. (Alternatively enter the Mac's IP address, also shown in AVP Play, on the "Mac" tab.)
+4. After pairing, the games, jobs, setup and settings of the Mac appear. Installing a game additionally needs Xcode, an Apple developer team and a game the user owns – this is set up on the Mac, not in this app.
+
+NETWORK AND PRIVACY
+The app uses Bonjour (_avpplay._tcp) and connects only to the paired Mac on the local network (TCP ports 47811/47812). The connection uses TLS 1.2 with a pre-shared key generated during pairing (Apple's Network framework; encryption is exempt). No accounts, no sign-in, no analytics, no data collected, no internet servers.
