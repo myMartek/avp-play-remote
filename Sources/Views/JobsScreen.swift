@@ -114,9 +114,19 @@ struct JobDetail: View {
                         VStack(alignment: .leading, spacing: 8) {
                             Text("\(job.title) \(JobLook.kind(job.kind))").font(.title.bold())
                             Label(JobLook.line(job), systemImage: JobLook.symbol(job.state)).foregroundStyle(JobLook.color(job.state))
-                            if job.state == .running, let progress = job.progress {
-                                ProgressView(value: progress)
-                                if let text = job.progressText { Text(text).font(.callout).monospacedDigit().foregroundStyle(.secondary) }
+                            if job.state == .running {
+                                if let bars = job.bars {
+                                    ForEach(Array(bars.enumerated()), id: \.offset) { _, bar in ProgressBar(bar: bar) }
+                                } else if let progress = job.progress {
+                                    ProgressBar(bar: RemoteProgress(value: progress, text: job.progressText))
+                                } else {
+                                    // Bauen und Prüfen melden keinen Stand – nur, dass gearbeitet wird.
+                                    HStack(spacing: 10) {
+                                        ProgressView().controlSize(.small)
+                                        Text(L("Working on it – the log below shows each step.", "In Arbeit – der Verlauf unten zeigt jeden Schritt."))
+                                            .font(.callout).foregroundStyle(.secondary)
+                                    }
+                                }
                             }
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -136,6 +146,25 @@ struct JobDetail: View {
         }
         .navigationTitle(job?.title ?? L("Job", "Auftrag"))
         .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+/// Ein Balken mit Überschrift und Stand in Worten – wie auf dem Mac.
+struct ProgressBar: View {
+    let bar: RemoteProgress
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            if let title = bar.title {
+                Text(title).font(.callout).lineLimit(1).truncationMode(.middle).monospacedDigit()
+            }
+            if let value = bar.value {
+                ProgressView(value: value).animation(.easeOut(duration: 0.3), value: value)
+            }
+            if let text = bar.text {
+                Text(text).font(.caption).foregroundStyle(.secondary).monospacedDigit()
+            }
+        }
     }
 }
 

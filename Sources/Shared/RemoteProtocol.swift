@@ -269,6 +269,17 @@ public struct RemoteGame: Codable, Sendable, Equatable, Identifiable {
     public var installed: Bool { onDevice == .current || onDevice == .update }
 }
 
+/// Ein Balken eines laufenden Auftrags, wie der Mac ihn zeigt: Gesamtstand, Datei x von y, Stand der Datei.
+public struct RemoteProgress: Codable, Sendable, Equatable {
+    /// Überschrift, etwa „Datei 3 von 12 · name.obb“.
+    public var title: String?
+    /// 0…1; `nil` = kein Balken, nur Text.
+    public var value: Double?
+    /// Stand in Worten, etwa „1,2 GB von 3,4 GB geladen · noch etwa 5 Minuten“.
+    public var text: String?
+    public init(title: String? = nil, value: Double?, text: String?) { self.title = title; self.value = value; self.text = text }
+}
+
 /// Ein Auftrag in der Liste des Macs.
 public struct RemoteJob: Codable, Sendable, Equatable, Identifiable {
     /// Wie auf dem Mac: läuft, wartet, abgeschlossen, abgebrochen, angehalten (Fehler), unterbrochen.
@@ -293,6 +304,8 @@ public struct RemoteJob: Codable, Sendable, Equatable, Identifiable {
     public var updated: Date
     public var canResume: Bool
     public var canCancel: Bool
+    /// Alle Balken des laufenden Schritts; fehlt bei älteren Macs.
+    public var bars: [RemoteProgress]?
 
     public init(id: String, gameId: String, title: String, state: State, kind: Kind, step: String?, stepIndex: Int, stepCount: Int,
                 progress: Double?, progressText: String?, failure: String?, lastLine: String?, updated: Date,
