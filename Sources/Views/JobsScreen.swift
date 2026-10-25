@@ -1,8 +1,14 @@
 import SwiftUI
 
+/// Zur Seite eines Auftrags.
+struct JobRoute: Hashable {
+    let id: String
+}
+
 struct JobsScreen: View {
     @Environment(RemoteClient.self) private var client
     @Binding var section: AppTab
+    @State private var clearing: RemoteChoice?
 
     var body: some View {
         NavigationStack {
@@ -15,12 +21,35 @@ struct JobsScreen: View {
                     List {
                         group(L("Running and waiting", "Läuft und wartet"), jobs.filter(\.active))
                         group(L("Stopped", "Angehalten"), jobs.filter { $0.state == .stopped || $0.state == .interrupted })
-                        group(L("Done", "Erledigt"), Array(jobs.filter { $0.state == .finished || $0.state == .cancelled }.prefix(20)))
+                        group(L("Done", "Erledigt"), jobs.filter { $0.state == .finished || $0.state == .cancelled })
                     }
                 }
             }
             .navigationTitle(L("Jobs", "Aufträge"))
-            .toolbar { ToolbarItem(placement: .topBarTrailing) { MacMenu(section: $section) } }
+            .navigationDestination(for: JobRoute.self) { JobDetail(jobId: $0.id) }
+            .navigationDestination(for: String.self) { GameDetail(gameId: $0) }
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Menu {
+                        ForEach(client.status?.clearable ?? []) { choice in
+                            Button(choice.title) { clearing = choice }
+                        }
+                    } label: {
+                        Label(L("Clear", "Leeren"), systemImage: "trash")
+                    }
+                    .disabled(client.connectedMac == nil || (client.status?.clearable ?? []).isEmpty)
+                }
+                ToolbarItem(placement: .topBarTrailing) { MacMenu(section: $section) }
+            }
+            .confirmationDialog(clearing?.title ?? "", isPresented: Binding(get: { clearing != nil }, set: { if !$0 { clearing = nil } }),
+                                titleVisibility: .visible) {
+                Button(L("Clear", "Leeren"), role: .destructive) {
+                    if let id = clearing?.id { client.perform(.clearJobs(kind: id), key: "clear") }
+                }
+            } message: {
+                Text(L("Takes these jobs off the list on the Mac. Downloaded files and everything on the Vision Pro stay. What is running or waiting is never cleared.",
+                       "Nimmt diese Aufträge aus der Liste auf dem Mac. Geladene Dateien und alles auf der Vision Pro bleiben. Was läuft oder wartet, wird nie geleert."))
+            }
         }
     }
 
@@ -28,14 +57,16 @@ struct JobsScreen: View {
     private func group(_ title: String, _ jobs: [RemoteJob]) -> some View {
         if !jobs.isEmpty {
             SwiftUI.Section(title) {
-                ForEach(jobs) { JobRow(job: $0) }
+                ForEach(jobs) { job in
+                    NavigationLink(value: JobRoute(id: job.id)) { JobRow(job: job) }
+                }
             }
         }
     }
 }
 
+/// Eine Zeile der Liste: nur zum Ansehen – anhalten und fortsetzen geht auf der Seite des Auftrags.
 struct JobRow: View {
-    @Environment(RemoteClient.self) private var client
     let job: RemoteJob
 
     var body: some View {
@@ -50,52 +81,61 @@ struct JobRow: View {
                 }
                 Text(JobLook.line(job)).font(.subheadline).foregroundStyle(.secondary)
                 if job.state == .running {
-                    if let progress = job.progress {
-                        ProgressView(value: progress)
-                    }
+                    if let progress = job.progress { ProgressView(value: progress) }
                     if let text = job.progressText { Text(text).font(.caption).monospacedDigit().foregroundStyle(.secondary) }
                 }
                 if let line = job.lastLine, job.active {
                     Text(line).font(.caption.monospaced()).foregroundStyle(.tertiary).lineLimit(2)
                 }
                 if let failure = job.failure {
-                    Text(failure).font(.callout).foregroundStyle(.orange).fixedSize(horizontal: false, vertical: true)
+                    Text(failure).font(.callout).foregroundStyle(.orange).lineLimit(3)
                 }
             }
-            JobButtons(job: job)
         }
         .padding(.vertical, 6)
     }
 }
 
-/// Anhalten und Fortsetzen, wie auf dem Mac.
-struct JobButtons: View {
+/// Die Seite eines Auftrags: Stand, Schritte, was schiefging, und der Verlauf – mit Fortsetzen und Abbrechen, das
+/// vorher nachfragt.
+struct JobDetail: View {
     @Environment(RemoteClient.self) private var client
-    let job: RemoteJob
+    let jobId: String
 
     var body: some View {
-        HStack(spacing: 12) {
-            if job.canResume {
-                Button(L("Resume", "Fortsetzen")) { client.perform(.resume(jobId: job.id), key: "resume:\(job.id)") }
-                    .buttonStyle(.borderedProminent)
-                    .disabled(client.busy.contains("resume:\(job.id)"))
+        let job = client.status?.jobs.first { $0.id == jobId }
+        Form {
+            if let job {
+                SwiftUI.Section {
+                    HStack(alignment: .top, spacing: 20) {
+                        if let game = client.game(job.gameId) {
+                            CoverView(game: game).frame(width: 220).clipShape(.rect(cornerRadius: 16))
+                        }
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("\(job.title) \(JobLook.kind(job.kind))").font(.title.bold())
+                            Label(JobLook.line(job), systemImage: JobLook.symbol(job.state)).foregroundStyle(JobLook.color(job.state))
+                            if job.state == .running, let progress = job.progress {
+                                ProgressView(value: progress)
+                                if let text = job.progressText { Text(text).font(.callout).monospacedDigit().foregroundStyle(.secondary) }
+                            }
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    .padding(.vertical, 6)
+                }
+                .listRowBackground(Color.clear)
+                if client.game(job.gameId) != nil {
+                    SwiftUI.Section {
+                        NavigationLink(value: job.gameId) {
+                            Label(L("Open the Game's Page", "Seite des Spiels öffnen"), systemImage: "gamecontroller")
+                        }
+                    }
+                }
             }
-            if job.canCancel {
-                Button(L("Cancel", "Abbrechen"), role: .destructive) { client.perform(.cancel(jobId: job.id), key: "cancel:\(job.id)") }
-                    .disabled(client.busy.contains("cancel:\(job.id)"))
-            }
+            PanelSections(panelId: "job:\(jobId)")
         }
-    }
-}
-
-/// Ein Auftrag auf der Seite seines Spiels.
-struct JobCard: View {
-    let job: RemoteJob
-
-    var body: some View {
-        JobRow(job: job)
-            .padding(24)
-            .background(.regularMaterial, in: .rect(cornerRadius: 28))
+        .navigationTitle(job?.title ?? L("Job", "Auftrag"))
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 

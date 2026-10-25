@@ -8,6 +8,7 @@ struct MacScreen: View {
     var body: some View {
         NavigationStack {
             Form {
+                if client.known.isEmpty { macApp }
                 if client.localNetworkDenied {
                     SwiftUI.Section { LocalNetworkHint().frame(maxWidth: .infinity).padding() }
                 }
@@ -90,8 +91,8 @@ struct MacScreen: View {
                 } header: {
                     Text(L("In this network", "In diesem Netz"))
                 } footer: {
-                    Text(L("A Mac shows up here when AVP Play is open on it and Settings › Remote control is switched on.",
-                           "Ein Mac erscheint hier, wenn AVP Play darauf offen ist und Einstellungen › Fernbedienung eingeschaltet ist."))
+                    Text(L("A Mac shows up here when AVP Play is open on it and “Remote Control” is switched on in its sidebar.",
+                           "Ein Mac erscheint hier, wenn AVP Play darauf offen ist und „Fernbedienung“ in der Seitenleiste eingeschaltet ist."))
                 }
 
                 SwiftUI.Section {
@@ -107,13 +108,48 @@ struct MacScreen: View {
                 } header: {
                     Text(L("Connect by address", "Mit Adresse verbinden"))
                 } footer: {
-                    Text(L("If the Mac does not show up (for example in a network that blocks Bonjour), enter the address shown in AVP Play › Settings › Remote control.",
-                           "Erscheint der Mac nicht (etwa in einem Netz, das Bonjour sperrt), gib die Adresse ein, die AVP Play › Einstellungen › Fernbedienung zeigt."))
+                    Text(L("If the Mac does not show up (for example in a network that blocks Bonjour), enter the address shown in AVP Play › Remote Control.",
+                           "Erscheint der Mac nicht (etwa in einem Netz, das Bonjour sperrt), gib die Adresse ein, die AVP Play › Fernbedienung zeigt."))
                 }
+
+                if !client.known.isEmpty { macApp }
             }
             .navigationTitle("Mac")
         }
     }
+
+    /// Wo es AVP Play für den Mac gibt – zum Teilen an den Mac, etwa per AirDrop – und die Anleitung im Wiki.
+    private var macApp: some View {
+        SwiftUI.Section {
+            VStack(alignment: .leading, spacing: 8) {
+                Text(L("This app only controls AVP Play on a Mac – the Mac downloads, builds and installs the games. AVP Play for the Mac is free and open source; download the newest version on the Mac and open it there.",
+                       "Diese App steuert nur AVP Play auf einem Mac – der Mac lädt, baut und installiert die Spiele. AVP Play für den Mac ist kostenlos und quelloffen; lade die neueste Fassung auf dem Mac und öffne sie dort."))
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            HStack(spacing: 16) {
+                Link(destination: MacScreen.download) {
+                    Label(L("Download AVP Play for the Mac", "AVP Play für den Mac laden"), systemImage: "arrow.down.circle")
+                }
+                Spacer()
+                // Zum Mac schicken, etwa per AirDrop – auf der Vision Pro selbst lässt sich damit nichts anfangen.
+                ShareLink(item: MacScreen.download, subject: Text("AVP Play"),
+                          message: Text(L("AVP Play for the Mac", "AVP Play für den Mac"))) {
+                    Label(L("Send to Mac", "An den Mac senden"), systemImage: "square.and.arrow.up")
+                }
+            }
+            Link(destination: MacScreen.wiki) {
+                Label(L("Instructions in the wiki", "Anleitung im Wiki"), systemImage: "book")
+            }
+        } header: {
+            Text(L("AVP Play for the Mac", "AVP Play für den Mac"))
+        } footer: {
+            Text(L("“Send to Mac” opens the share sheet – with AirDrop the link arrives right on your Mac.",
+                   "„An den Mac senden“ öffnet das Teilen-Menü – per AirDrop kommt der Link direkt auf deinem Mac an."))
+        }
+    }
+
+    static let download = URL(string: "https://github.com/myMartek/avp-play/releases/latest")!
+    static let wiki = URL(string: "https://github.com/myMartek/avp-play/wiki")!
 
     private func connect() {
         client.connectManually(address)
@@ -144,8 +180,8 @@ struct PairingSheet: View {
             VStack(spacing: 28) {
                 Image(systemName: "laptopcomputer.and.arrow.down").font(.system(size: 56)).foregroundStyle(.tint)
                 Text(L("Pair with “\(target.name)”", "Mit „\(target.name)“ koppeln")).font(.title.bold()).multilineTextAlignment(.center)
-                Text(L("Enter the code that AVP Play on this Mac shows under Settings › Remote control. You only need to do this once.",
-                       "Gib den Code ein, den AVP Play auf diesem Mac unter Einstellungen › Fernbedienung zeigt. Das ist nur einmal nötig."))
+                Text(L("Enter the code that AVP Play on this Mac shows under “Remote Control”. You only need to do this once.",
+                       "Gib den Code ein, den AVP Play auf diesem Mac unter „Fernbedienung“ zeigt. Das ist nur einmal nötig."))
                     .multilineTextAlignment(.center).foregroundStyle(.secondary).frame(maxWidth: 460)
                 TextField("000 000", text: $code)
                     .font(.system(size: 40, weight: .semibold, design: .monospaced))

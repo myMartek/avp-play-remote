@@ -14,6 +14,7 @@
 		4904D1069DDB1563D3072164 /* JobsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D8AAE275A6B4E8480A3E1D8 /* JobsScreen.swift */; };
 		5842A1D153785699F3A479ED /* GamesScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6CE85673FCD6D411F98B1A7 /* GamesScreen.swift */; };
 		67129937A4BB15852F571C85 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B9703A6574716F160C6D0DC6 /* Assets.xcassets */; };
+		710F49509E8A0F7C83C7DB99 /* PanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC34FCC0D451D16F605FBD80 /* PanelView.swift */; };
 		7DE9813F6720AAD0B233AC49 /* RemoteProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA8731A8E2C4089EE0C625DF /* RemoteProtocol.swift */; };
 		8571AD8D153D09E1A32C412E /* RemoteClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8BCB54F8A77D293D6152B6B /* RemoteClient.swift */; };
 		BE7CC9BE02F01B35CE244597 /* Support.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D4BDE0A14800BEA6141004 /* Support.swift */; };
@@ -34,6 +35,7 @@
 		C6CE85673FCD6D411F98B1A7 /* GamesScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamesScreen.swift; sourceTree = "<group>"; };
 		C8BCB54F8A77D293D6152B6B /* RemoteClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteClient.swift; sourceTree = "<group>"; };
 		CA8731A8E2C4089EE0C625DF /* RemoteProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteProtocol.swift; sourceTree = "<group>"; };
+		EC34FCC0D451D16F605FBD80 /* PanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanelView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -73,6 +75,7 @@
 				C6CE85673FCD6D411F98B1A7 /* GamesScreen.swift */,
 				1D8AAE275A6B4E8480A3E1D8 /* JobsScreen.swift */,
 				36F2F02DAF6BB23430314F28 /* MacScreen.swift */,
+				EC34FCC0D451D16F605FBD80 /* PanelView.swift */,
 				199670FC19D31866A2458B8F /* UpdatesScreen.swift */,
 			);
 			path = Views;
@@ -188,6 +191,7 @@
 				5842A1D153785699F3A479ED /* GamesScreen.swift in Sources */,
 				4904D1069DDB1563D3072164 /* JobsScreen.swift in Sources */,
 				C50DF965CEB6D3293C5D664C /* MacScreen.swift in Sources */,
+				710F49509E8A0F7C83C7DB99 /* PanelView.swift in Sources */,
 				8571AD8D153D09E1A32C412E /* RemoteClient.swift in Sources */,
 				7DE9813F6720AAD0B233AC49 /* RemoteProtocol.swift in Sources */,
 				BE7CC9BE02F01B35CE244597 /* Support.swift in Sources */,

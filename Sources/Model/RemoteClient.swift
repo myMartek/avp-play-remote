@@ -54,6 +54,12 @@ final class RemoteClient {
     private(set) var state: ConnectionState = .searching
     private(set) var server: RemoteServerInfo?
     private(set) var games: [RemoteGame] = []
+    /// Die eigenen Filter des Macs und was die Filterleiste zeigen soll.
+    private(set) var filters: [RemoteFilter] = []
+    private(set) var onlineCatalog = true
+    private(set) var horizonPlusKnown = false
+    /// Die Seiten, die der Mac beschreibt (Spiel, Auftrag, Einrichtung, Einstellungen), nach Kennung.
+    private(set) var panels: [String: RemotePanel] = [:]
     private(set) var status: RemoteStatus?
     private(set) var covers: [String: CoverEntry] = [:]
     /// Bitten, auf deren Antwort gerade gewartet wird – für Knöpfe, die so lange drehen.
@@ -74,6 +80,8 @@ final class RemoteClient {
     private var coverRequests: Set<String> = []
     private var active = false
     private var offeredPairing = false
+    /// Wie oft jede Seite gerade gezeigt wird – erst wenn keine Ansicht sie mehr braucht, wird sie geschlossen.
+    private var openPanels: [String: Int] = [:]
     private let queue = DispatchQueue(label: "io.github.mymartek.avpplay.remote.net")
 
     /// Der Mac, der zuletzt verbunden war oder zuletzt gewählt wurde.
@@ -264,8 +272,8 @@ final class RemoteClient {
         // nicht – neu koppeln.
         if case .tls = error {
             disconnect()
-            state = .refused(L("“\(link.mac.name)” no longer accepts this Vision Pro. Pair it again with the code from AVP Play › Settings › Remote control.",
-                               "„\(link.mac.name)“ nimmt diese Vision Pro nicht mehr an. Koppele erneut mit dem Code aus AVP Play › Einstellungen › Fernbedienung."))
+            state = .refused(L("“\(link.mac.name)” no longer accepts this Vision Pro. Pair it again with the code from AVP Play › Remote Control.",
+                               "„\(link.mac.name)“ nimmt diese Vision Pro nicht mehr an. Koppele erneut mit dem Code aus AVP Play › Fernbedienung."))
             return
         }
         disconnect()
@@ -302,6 +310,7 @@ final class RemoteClient {
         pending = [:]
         coverRequests = []
         busy = []
+        panels = [:]
         if !keepState { state = .searching }
     }
 
@@ -326,10 +335,17 @@ final class RemoteClient {
             attempt = 0
             preferredId = info.serverId
             update(info.serverId) { $0.name = info.name; $0.lastConnected = Date() }
+            // Was nach einer abgerissenen Verbindung noch gezeigt wird, wieder anfordern.
+            for id in openPanels.keys { link.channel.send(RemoteClientMessage(seq: nextSeq(), request: .openPanel(id: id))) }
         case .status(let status):
             self.status = status
-        case .games(let games):
-            self.games = games
+        case .library(let library):
+            games = library.games
+            filters = library.filters
+            onlineCatalog = library.onlineCatalog
+            horizonPlusKnown = library.horizonPlus
+        case .panel(let panel):
+            panels[panel.id] = panel
         case .cover(let gameId, let key, let jpeg):
             if let key { coverRequests.remove(key) }
             guard let key, let jpeg, let image = UIImage(data: jpeg) else { return }
@@ -373,6 +389,28 @@ final class RemoteClient {
             busy.remove(key)
             if let error { message = error }
         }
+    }
+
+    // MARK: Seiten
+
+    /// Eine Ansicht zeigt eine Seite: Der Mac schickt sie und jede Änderung, bis sie wieder geschlossen wird.
+    func openPanel(_ id: String) {
+        openPanels[id, default: 0] += 1
+        guard openPanels[id] == 1, let link, link.welcomed else { return }
+        link.channel.send(RemoteClientMessage(seq: nextSeq(), request: .openPanel(id: id)))
+    }
+
+    func closePanel(_ id: String) {
+        guard let count = openPanels[id] else { return }
+        if count > 1 { openPanels[id] = count - 1; return }
+        openPanels[id] = nil
+        guard let link, link.welcomed else { return }
+        link.channel.send(RemoteClientMessage(seq: nextSeq(), request: .closePanel(id: id)))
+    }
+
+    /// Ein Schalter, eine Wahl oder ein Knopf einer Seite.
+    func act(_ panel: String, _ item: String, value: String? = nil) {
+        perform(.panelAction(panel: panel, item: item, value: value), key: "\(panel)/\(item)")
     }
 
     // MARK: Bilder
@@ -484,7 +522,7 @@ final class RemoteClient {
         let connection = NWConnection(to: endpoint, using: parameters)
         return await withCheckedContinuation { continuation in
             let once = Once()
-            func finish(_ host: NWEndpoint.Host?) {
+            @Sendable func finish(_ host: NWEndpoint.Host?) {
                 guard once.claim() else { return }
                 connection.cancel()
                 continuation.resume(returning: host)
@@ -510,7 +548,7 @@ final class RemoteClient {
         let channel = RemoteChannel(connection: connection, queue: queue)
         return await withCheckedContinuation { continuation in
             let once = Once()
-            func finish(_ result: Result<RemotePairing, PairingError>) {
+            @Sendable func finish(_ result: Result<RemotePairing, PairingError>) {
                 guard once.claim() else { return }
                 connection.cancel()
                 continuation.resume(returning: result)
@@ -530,11 +568,11 @@ final class RemoteClient {
                     }, closed: { _ in finish(.failure(PairingError(L("The Mac closed the connection.", "Der Mac hat die Verbindung beendet.")))) })
                 case .failed(let error), .waiting(let error):
                     if case .tls = error {
-                        finish(.failure(PairingError(L("The code is not right – or it has changed. Look again in AVP Play › Settings › Remote control.",
-                                                       "Der Code stimmt nicht – oder er hat sich geändert. Sieh noch einmal in AVP Play › Einstellungen › Fernbedienung nach."))))
+                        finish(.failure(PairingError(L("The code is not right – or it has changed. Look again in AVP Play › Remote Control.",
+                                                       "Der Code stimmt nicht – oder er hat sich geändert. Sieh noch einmal in AVP Play › Fernbedienung nach."))))
                     } else {
-                        finish(.failure(PairingError(L("The Mac cannot be reached for pairing. Is the remote control switched on in AVP Play › Settings?",
-                                                       "Der Mac ist zum Koppeln nicht erreichbar. Ist die Fernbedienung in AVP Play › Einstellungen eingeschaltet?"))))
+                        finish(.failure(PairingError(L("The Mac cannot be reached for pairing. Is “Remote Control” switched on in AVP Play?",
+                                                       "Der Mac ist zum Koppeln nicht erreichbar. Ist „Fernbedienung“ in AVP Play eingeschaltet?"))))
                     }
                 default: break
                 }

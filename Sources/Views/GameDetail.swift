@@ -1,38 +1,30 @@
 import SwiftUI
 
-/// Die Seite eines Spiels: Bild, Stand, und was sich damit tun lässt.
+/// Die Seite eines Spiels: oben Bild, Stand und die Knöpfe zum Installieren; darunter, was der Mac zu dem Spiel
+/// anbietet – Favorit, Filter, Fassung, Toolchain, Spielstände, wählbare Inhalte, Rückmeldung, Store-Seite.
 struct GameDetail: View {
     @Environment(RemoteClient.self) private var client
     let gameId: String
 
     var body: some View {
         if let game = client.game(gameId) {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 32) {
-                    HStack(alignment: .top, spacing: 32) {
-                        CoverView(game: game)
-                            .frame(width: 460)
-                            .clipShape(.rect(cornerRadius: 28))
-                        VStack(alignment: .leading, spacing: 14) {
-                            Text(game.title).font(.extraLargeTitle2).lineLimit(2)
-                            HStack(spacing: 10) {
-                                TrustBadge(trust: game.trust)
-                                if game.mixedReality { Tag(text: "Mixed Reality", symbol: "visionpro") }
-                                if game.handTracking { Tag(text: L("Hand tracking", "Hand-Tracking"), symbol: "hand.raised") }
-                            }
-                            let state = GameState(game, job: client.job(for: game))
-                            Label(state.text, systemImage: state.symbol).font(.title3).foregroundStyle(state.color)
-                            facts(game)
-                        }
-                    }
+            Form {
+                SwiftUI.Section {
+                    header(game)
+                }
+                .listRowBackground(Color.clear)
 
-                    if let job = client.job(for: game), job.active || job.state == .stopped || job.state == .interrupted {
-                        JobCard(job: job)
-                    }
-
+                SwiftUI.Section {
                     actions(game)
                 }
-                .padding(40)
+
+                if let job = client.job(for: game), job.active || job.state == .stopped || job.state == .interrupted {
+                    SwiftUI.Section(L("Job", "Auftrag")) {
+                        NavigationLink(value: JobRoute(id: job.id)) { JobRow(job: job) }
+                    }
+                }
+
+                PanelSections(panelId: "game:\(game.id)")
             }
             .navigationTitle(game.title)
             .navigationBarTitleDisplayMode(.inline)
@@ -41,39 +33,33 @@ struct GameDetail: View {
         }
     }
 
-    @ViewBuilder
-    private func facts(_ game: RemoteGame) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
-            if let source = game.source {
-                fact(L("Bought at", "Gekauft bei"), source == "steam" ? "Steam" : "Meta")
-            }
-            if let owned = game.owned {
-                fact(L("Owned", "Im Besitz"), owned ? L("Yes", "Ja") : L("No", "Nein"))
-            }
-            if let built = game.builtWith, game.installed {
-                fact(L("Built with", "Gebaut mit"), built)
-            }
-            if game.storeBytes > 0 {
-                fact(L("On the Mac", "Auf dem Mac"), game.storeBytes.gigabytes)
-            }
-            if let size = game.downloadSize, game.canDownload {
-                fact(L("Still to download", "Noch zu laden"), size)
+    private func header(_ game: RemoteGame) -> some View {
+        HStack(alignment: .top, spacing: 32) {
+            CoverView(game: game)
+                .frame(width: 440)
+                .clipShape(.rect(cornerRadius: 28))
+            VStack(alignment: .leading, spacing: 14) {
+                Text(game.title).font(.extraLargeTitle2).lineLimit(2)
+                HStack(spacing: 10) {
+                    TrustBadge(trust: game.trust)
+                    if game.favourite { Tag(text: L("Favourite", "Favorit"), symbol: "star.fill") }
+                    if game.mixedReality { Tag(text: "Mixed Reality", symbol: "visionpro") }
+                    if game.handTracking { Tag(text: L("Hand tracking", "Hand-Tracking"), symbol: "hand.raised") }
+                }
+                let state = GameState(game, job: client.job(for: game))
+                Label(state.text, systemImage: state.symbol).font(.title3).foregroundStyle(state.color)
+                if let built = game.builtWith, game.installed {
+                    Text(L("Built with \(built)", "Gebaut mit \(built)")).foregroundStyle(.secondary)
+                }
             }
         }
-        .font(.callout)
-    }
-
-    private func fact(_ label: String, _ value: String) -> some View {
-        HStack(spacing: 8) {
-            Text(label).foregroundStyle(.secondary)
-            Text(value)
-        }
+        .padding(.vertical, 8)
     }
 
     @ViewBuilder
     private func actions(_ game: RemoteGame) -> some View {
         let installKey = "install:\(game.id)", downloadKey = "download:\(game.id)"
-        VStack(alignment: .leading, spacing: 16) {
+        VStack(alignment: .leading, spacing: 14) {
             HStack(spacing: 16) {
                 Button {
                     client.perform(.install(gameId: game.id), key: installKey)
@@ -94,9 +80,10 @@ struct GameDetail: View {
                     } label: {
                         HStack {
                             if client.busy.contains(downloadKey) { ProgressView().controlSize(.small) }
-                            Label(L("Only Download to the Mac", "Nur auf den Mac laden"), systemImage: "arrow.down.to.line")
+                            Label(L("Download Only", "Nur herunterladen") + (game.downloadSize.map { " · \($0)" } ?? ""), systemImage: "arrow.down.to.line")
                         }
                     }
+                    .buttonStyle(.bordered)
                     .controlSize(.large)
                     .disabled(game.downloadBlocker != nil || game.busy || client.busy.contains(downloadKey))
                 }
@@ -111,9 +98,7 @@ struct GameDetail: View {
                     .font(.callout).foregroundStyle(.secondary)
             }
         }
-        .padding(24)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.regularMaterial, in: .rect(cornerRadius: 28))
+        .padding(.vertical, 6)
     }
 
     private func installTitle(_ game: RemoteGame) -> String {

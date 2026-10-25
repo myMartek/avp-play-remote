@@ -28,8 +28,8 @@ struct ConnectionGate<Content: View>: View {
                     } else if client.known.isEmpty {
                         Image(systemName: "laptopcomputer.and.arrow.down").font(.system(size: 56)).foregroundStyle(.secondary)
                         Text(L("Pair a Mac", "Einen Mac koppeln")).font(.largeTitle.bold())
-                        Text(L("Open AVP Play on your Mac and switch on Settings › Remote control. The Mac then appears here, and you pair it once with the code it shows.",
-                               "Öffne AVP Play auf deinem Mac und schalte Einstellungen › Fernbedienung ein. Der Mac erscheint dann hier, und du koppelst ihn einmal mit dem Code, den er zeigt."))
+                        Text(L("Open AVP Play on your Mac and switch on “Remote Control” in its sidebar. The Mac then appears here, and you pair it once with the code it shows.",
+                               "Öffne AVP Play auf deinem Mac und schalte in der Seitenleiste „Fernbedienung“ ein. Der Mac erscheint dann hier, und du koppelst ihn einmal mit dem Code, den er zeigt."))
                             .multilineTextAlignment(.center).foregroundStyle(.secondary).frame(maxWidth: 560)
                     } else {
                         ProgressView()

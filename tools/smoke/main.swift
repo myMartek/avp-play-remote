@@ -123,7 +123,7 @@ var games: [RemoteGame] = []
 var status: RemoteStatus?
 check(main.wait { p in
     for m in p.messages {
-        if case .games(let g) = m { games = g }
+        if case .library(let l) = m { games = l.games }
         if case .status(let s) = m { status = s }
     }
     return !games.isEmpty && status != nil
@@ -160,6 +160,24 @@ if let game = games.first(where: { $0.coverKey != nil }) {
         return false
     }
     check(size > 1000, "Titelbild „\(game.title)“: \(size / 1024) KB")
+}
+// 9. Seiten: Spiel, Auftrag, Einrichtung, Einstellungen – was der Mac schickt.
+var panelIds = ["setup", "settings"]
+if let game = games.first(where: { $0.installed }) { panelIds.append("game:\(game.id)") }
+if let job = status?.jobs.first { panelIds.append("job:\(job.id)") }
+for (n, id) in panelIds.enumerated() {
+    main.send(40 + n, .openPanel(id: id))
+    var panel: RemotePanel?
+    _ = main.wait(15) { p in
+        for case .panel(let got) in p.messages where got.id == id { panel = got; return true }
+        return false
+    }
+    check(panel != nil, "Seite \(id)")
+    for section in panel?.sections ?? [] {
+        let kinds = section.items.map { "\($0.kind.rawValue):\($0.id)" }.joined(separator: " ")
+        print("     [\(section.title ?? "-")] \(kinds)")
+    }
+    main.send(60 + n, .closePanel(id: id))
 }
 main.connection.cancel()
 print(failures == 0 ? "Alles gut." : "\(failures) Fehler.")

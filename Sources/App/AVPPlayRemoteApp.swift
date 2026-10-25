@@ -15,7 +15,7 @@ struct AVPPlayRemoteApp: App {
     }
 }
 
-enum AppTab: String, Hashable { case games, updates, jobs, mac }
+enum AppTab: String, Hashable { case games, updates, jobs, setup, settings, mac }
 
 struct RootView: View {
     @Environment(RemoteClient.self) private var client
@@ -35,6 +35,12 @@ struct RootView: View {
                 JobsScreen(section: $section)
             }
             .badge(client.connectedMac == nil ? 0 : client.status?.jobs.filter(\.active).count ?? 0)
+            Tab(L("Setup", "Einrichtung"), systemImage: "checklist", value: AppTab.setup) {
+                PanelScreen(section: $section, panelId: "setup", title: L("Setup", "Einrichtung"))
+            }
+            Tab(L("Settings", "Einstellungen"), systemImage: "gearshape", value: AppTab.settings) {
+                PanelScreen(section: $section, panelId: "settings", title: L("Settings", "Einstellungen"))
+            }
             Tab("Mac", systemImage: "laptopcomputer", value: AppTab.mac) {
                 MacScreen()
             }

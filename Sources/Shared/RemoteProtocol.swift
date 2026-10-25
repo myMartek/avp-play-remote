@@ -21,7 +21,7 @@ public enum RemoteWire {
     /// Zum Koppeln ein eigener Port mit eigenem Schlüssel: Wer nur den Code kennt, kann dort nichts als koppeln.
     public static let pairPort: UInt16 = 47812
     /// Steigt, wenn sich Nachrichten so ändern, dass eine ältere Gegenseite sie nicht mehr versteht.
-    public static let protocolVersion = 1
+    public static let protocolVersion = 2
     /// Einträge im TXT-Eintrag des Dienstes.
     public static let txtServerId = "id"
     public static let txtVersion = "v"
@@ -147,6 +147,12 @@ public final class RemoteChannel: @unchecked Sendable {
         send(encoded: payload)
     }
 
+    /// Eine letzte Nachricht: Die Verbindung endet erst, wenn sie hinaus ist – sonst ginge sie mit ihr verloren.
+    public func sendAndClose<T: Encodable>(_ value: T) {
+        guard let payload = try? RemoteWire.encoder.encode(value) else { return connection.cancel() }
+        connection.send(content: RemoteWire.frame(payload), completion: .contentProcessed { [connection] _ in connection.cancel() })
+    }
+
     /// Eine schon kodierte Nachricht – wenn dieselbe an mehrere geht.
     public func send(encoded payload: Data) {
         connection.send(content: RemoteWire.frame(payload), completion: .contentProcessed { _ in })
@@ -242,6 +248,13 @@ public struct RemoteGame: Codable, Sendable, Equatable, Identifiable {
     public var coverKey: String?
     /// Womit das installierte Spiel gebaut ist (Toolchain), in Worten.
     public var builtWith: String?
+    /// Für die Filter wie auf dem Mac: gehört dem Konto bei Meta oder Steam, gibt es bei Meta oder Steam, steht in
+    /// einem Horizon+-Katalog (`games`, `indie`), und wie viele Nutzer melden, dass es läuft (für die Reihenfolge).
+    public var ownedAnywhere: Bool = false
+    public var fromMeta: Bool = false
+    public var fromSteam: Bool = false
+    public var horizonPlus: String?
+    public var works: Int = 0
 
     public init(id: String, title: String, trust: Trust, onDevice: OnDevice, downloaded: Bool, owned: Bool?, source: String?,
                 busy: Bool, installBlocker: String?, canDownload: Bool, downloadBlocker: String?, downloadSize: String?,
@@ -310,13 +323,97 @@ public struct RemoteStatus: Codable, Sendable, Equatable {
     public var jobs: [RemoteJob]
     /// Eine Meldung des Macs, die gerade steht.
     public var notice: String?
+    /// Was sich aus der Liste der Aufträge nehmen lässt: Kennung (`finished`, `stopped`, `all`) und Titel mit Anzahl.
+    public var clearable: [RemoteChoice] = []
 
     public init(deviceName: String?, deviceVia: String?, deviceProblem: String?, setupProblem: String?, refreshing: Bool,
-                updatable: [String], jobs: [RemoteJob], notice: String?) {
+                updatable: [String], jobs: [RemoteJob], notice: String?, clearable: [RemoteChoice] = []) {
         self.deviceName = deviceName; self.deviceVia = deviceVia; self.deviceProblem = deviceProblem
         self.setupProblem = setupProblem; self.refreshing = refreshing; self.updatable = updatable; self.jobs = jobs
-        self.notice = notice
+        self.notice = notice; self.clearable = clearable
     }
+}
+
+/// Ein eigener Filter des Macs („32 Bit“, „Für Gäste“) mit seinen Spielen.
+public struct RemoteFilter: Codable, Sendable, Equatable, Identifiable {
+    public var id: String
+    public var name: String
+    public var games: [String]
+    public init(id: String, name: String, games: [String]) { self.id = id; self.name = name; self.games = games }
+}
+
+/// Die Spieleliste mit dem, was die Filter dazu brauchen.
+public struct RemoteLibrary: Codable, Sendable, Equatable {
+    public var games: [RemoteGame]
+    public var filters: [RemoteFilter]
+    /// Der Online-Katalog ist an (dann gibt es „Von Nutzern bestätigt“).
+    public var onlineCatalog: Bool
+    /// Ein Horizon+-Katalog ist bekannt (dann gibt es die Horizon+-Filter).
+    public var horizonPlus: Bool
+    public init(games: [RemoteGame], filters: [RemoteFilter], onlineCatalog: Bool, horizonPlus: Bool) {
+        self.games = games; self.filters = filters; self.onlineCatalog = onlineCatalog; self.horizonPlus = horizonPlus
+    }
+}
+
+/// Eine Wahl in einer Liste: Kennung, Text und – für gegliederte Listen – die Überschrift ihres Abschnitts.
+public struct RemoteChoice: Codable, Sendable, Equatable, Hashable, Identifiable {
+    public var id: String
+    public var title: String
+    public var section: String?
+    public init(id: String, title: String, section: String? = nil) { self.id = id; self.title = title; self.section = section }
+}
+
+/// Ein Eintrag einer Seite, die der Mac beschreibt und die Fernbedienung nur zeigt: Text, Wert, Schalter, Auswahl,
+/// Knopf, Link, Prüfpunkt oder etwas, das gerade läuft. So bleibt alles, was entscheidet, auf dem Mac – die
+/// Fernbedienung muss für eine neue Einstellung nicht neu gebaut werden.
+public struct RemoteItem: Codable, Sendable, Equatable, Identifiable {
+    public enum Kind: String, Codable, Sendable { case text, fact, toggle, choice, action, link, check, progress, log }
+    public enum Style: String, Codable, Sendable { case normal, secondary, warning, success, prominent, destructive }
+
+    public var id: String
+    public var kind: Kind
+    public var title: String
+    /// Erklärung unter dem Titel; bei `text` der Text selbst, bei `log` die Zeilen.
+    public var detail: String?
+    /// Bei `fact` der Wert, bei `choice` die gewählte Kennung, bei `link` die Adresse.
+    public var value: String?
+    public var on: Bool?
+    public var choices: [RemoteChoice]?
+    public var enabled: Bool
+    public var style: Style
+    /// Bei einem Knopf: erst nachfragen, mit diesem Text.
+    public var confirm: String?
+    /// Bei einem Knopf: erst einen Text erfragen (mit diesem Platzhalter) und mitschicken.
+    public var prompt: String?
+    /// Bei `check`: `ok`, `warning`, `missing` oder `checking`.
+    public var state: String?
+    /// Bei einem Link: ob die Fernbedienung ihn zum Teilen anbieten darf.
+    public var shareable: Bool?
+
+    public init(id: String, kind: Kind, title: String, detail: String? = nil, value: String? = nil, on: Bool? = nil,
+                choices: [RemoteChoice]? = nil, enabled: Bool = true, style: Style = .normal, confirm: String? = nil,
+                prompt: String? = nil, state: String? = nil, shareable: Bool? = nil) {
+        self.id = id; self.kind = kind; self.title = title; self.detail = detail; self.value = value; self.on = on
+        self.choices = choices; self.enabled = enabled; self.style = style; self.confirm = confirm; self.prompt = prompt
+        self.state = state; self.shareable = shareable
+    }
+}
+
+public struct RemoteSection: Codable, Sendable, Equatable, Identifiable {
+    public var id: String
+    public var title: String?
+    public var footer: String?
+    public var items: [RemoteItem]
+    public init(id: String, title: String?, footer: String? = nil, items: [RemoteItem]) {
+        self.id = id; self.title = title; self.footer = footer; self.items = items
+    }
+}
+
+/// Eine Seite: `game:<Kennung>`, `job:<Kennung>`, `setup` oder `settings`.
+public struct RemotePanel: Codable, Sendable, Equatable, Identifiable {
+    public var id: String
+    public var sections: [RemoteSection]
+    public init(id: String, sections: [RemoteSection]) { self.id = id; self.sections = sections }
 }
 
 /// Was die Fernbedienung vom Mac will.
@@ -334,6 +431,15 @@ public enum RemoteRequest: Codable, Sendable, Equatable {
     case cancel(jobId: String)
     case resume(jobId: String)
     case cover(gameId: String)
+    /// Eine Seite wird gezeigt: Der Mac schickt sie und danach jede Änderung, bis `closePanel`. Bei einem Spiel tut
+    /// er dabei, was das Öffnen seiner Seite auf dem Mac tut (nachschlagen, Fassungen und Kauf prüfen).
+    case openPanel(id: String)
+    case closePanel(id: String)
+    /// Ein Schalter, eine Wahl oder ein Knopf einer Seite. `value`: `1`/`0` bei Schaltern, die Kennung bei einer
+    /// Wahl, der erfragte Text bei einem Knopf mit `prompt`.
+    case panelAction(panel: String, item: String, value: String?)
+    /// Nimmt Aufträge aus der Liste: `finished`, `stopped` oder `all` (nie, was läuft oder wartet).
+    case clearJobs(kind: String)
 }
 
 public struct RemoteClientMessage: Codable, Sendable, Equatable {
@@ -348,7 +454,8 @@ public enum RemoteServerMessage: Codable, Sendable, Equatable {
     case welcome(RemoteServerInfo)
     case paired(RemotePairing)
     case status(RemoteStatus)
-    case games([RemoteGame])
+    case library(RemoteLibrary)
+    case panel(RemotePanel)
     case cover(gameId: String, key: String?, jpeg: Data?)
     /// Die Antwort auf eine Bitte: `error` ist `nil`, wenn sie angenommen ist.
     case reply(seq: Int, error: String?)
