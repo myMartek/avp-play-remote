@@ -5,6 +5,14 @@ wear the Apple Vision Pro: browse your games, see what is installed and what can
 download games, and follow, cancel or resume jobs. The Mac still does all the work (download, build, sign, install);
 the headset only needs to be in the same network.
 
+## Install
+
+The app is not in the App Store. AVP Play installs it for you (any version after 1.5.3): open *Remote Control* in its
+sidebar, or the *AVP Play Remote* tile under *Games*, and click *Install*. AVP Play downloads the source code of the
+newest release from this repository, builds it with your own Apple team (like the games) and installs it on the Vision
+Pro. With a free Apple team the app counts towards the three apps such a team may have on the device, and it has to
+be installed again every seven days, like the games.
+
 ## How it connects
 
 - AVP Play on the Mac (Settings › Remote control) listens on TCP port 47811 and shows itself in the local network
