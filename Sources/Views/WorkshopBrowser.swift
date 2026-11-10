@@ -159,37 +159,40 @@ struct WorkshopBrowser: View {
                     ToolbarItem(placement: .topBarTrailing) {
                         Button(L("Done", "Fertig")) { dismiss() }
                     }
-                    ToolbarItem(placement: .bottomOrnament) {
-                        HStack(spacing: 16) {
-                            if page.loading { ProgressView().controlSize(.small) }
-                            if let itemId, known.contains(itemId) {
-                                Label(L("In your list", "Steht in deiner Liste"), systemImage: "checkmark.circle")
-                                    .foregroundStyle(.secondary)
-                            } else if let itemId {
-                                Button {
-                                    send(itemId)
-                                } label: {
-                                    HStack {
-                                        if sending { ProgressView().controlSize(.small) }
-                                        Label(L("Load into AVP Play", "In AVP Play laden"), systemImage: "square.and.arrow.down")
-                                    }
+                }
+                .safeAreaInset(edge: .bottom) {
+                    HStack(spacing: 16) {
+                        if page.loading { ProgressView().controlSize(.small) }
+                        if let itemId, known.contains(itemId) {
+                            Label(L("In your list", "Steht in deiner Liste"), systemImage: "checkmark.circle")
+                                .foregroundStyle(.secondary)
+                        } else if let itemId {
+                            Button {
+                                send(itemId)
+                            } label: {
+                                HStack {
+                                    if sending { ProgressView().controlSize(.small) }
+                                    Label(L("Load into AVP Play", "In AVP Play laden"), systemImage: "square.and.arrow.down")
                                 }
-                                .buttonStyle(.borderedProminent)
-                                .disabled(sending || says.busy)
-                            } else {
-                                Text(L("Open an item to load it into AVP Play.", "Öffne ein Item, um es in AVP Play zu laden."))
-                                    .foregroundStyle(.secondary)
                             }
-                            if let text = answer ?? says.text {
-                                HStack(spacing: 8) {
-                                    if says.busy { ProgressView().controlSize(.small) }
-                                    Text(text).lineLimit(2).foregroundStyle(.secondary)
-                                }
-                                .frame(maxWidth: 520, alignment: .leading)
-                            }
+                            .buttonStyle(.borderedProminent)
+                            .disabled(sending || says.busy)
+                        } else {
+                            Text(L("Open an item to load it into AVP Play.", "Öffne ein Item, um es in AVP Play zu laden."))
+                                .foregroundStyle(.secondary)
                         }
-                        .padding(.horizontal, 8)
+                        if let text = answer ?? says.text {
+                            HStack(spacing: 8) {
+                                if says.busy { ProgressView().controlSize(.small) }
+                                Text(text).lineLimit(2).foregroundStyle(.secondary)
+                            }
+                            .frame(maxWidth: 520, alignment: .leading)
+                        }
                     }
+                    .padding(.horizontal, 8)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 12)
+                    .background(.regularMaterial)
                 }
         }
         .frame(minWidth: 900, minHeight: 700)
