@@ -5,6 +5,10 @@ wear the Apple Vision Pro: browse your games, see what is installed and what can
 download games, and follow, cancel or resume jobs. The Mac still does all the work (download, build, sign, install);
 the headset only needs to be in the same network.
 
+For Half-Life: Alyx it also browses the Steam Workshop: open an item and *Load into AVP Play* sends it to the Mac,
+which fetches it with its Steam sign-in and copies it to the game on the Vision Pro (Remote 1.1 with AVP Play 1.10.10
+or newer).
+
 ## Install
 
 The app is not in the App Store. AVP Play installs it for you (any version after 1.5.3): open *Remote Control* in its
