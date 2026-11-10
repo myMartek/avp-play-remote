@@ -19,6 +19,7 @@
 		7DE9813F6720AAD0B233AC49 /* RemoteProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA8731A8E2C4089EE0C625DF /* RemoteProtocol.swift */; };
 		8571AD8D153D09E1A32C412E /* RemoteClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8BCB54F8A77D293D6152B6B /* RemoteClient.swift */; };
 		9AFE3DB55B89D1B6AE7FE64F /* Demo.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 62152458A326A5F3D4B08456 /* Demo.xcassets */; };
+		B5A8025EDF0D0313CB46792C /* WorkshopBrowser.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7A60A290121861E7CA7FA30 /* WorkshopBrowser.swift */; };
 		BE7CC9BE02F01B35CE244597 /* Support.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D4BDE0A14800BEA6141004 /* Support.swift */; };
 		C50DF965CEB6D3293C5D664C /* MacScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36F2F02DAF6BB23430314F28 /* MacScreen.swift */; };
 /* End PBXBuildFile section */
@@ -36,6 +37,7 @@
 		80D87B9C1189A55351333DA7 /* AVPPlayRemote.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = AVPPlayRemote.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B9703A6574716F160C6D0DC6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C6CE85673FCD6D411F98B1A7 /* GamesScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamesScreen.swift; sourceTree = "<group>"; };
+		C7A60A290121861E7CA7FA30 /* WorkshopBrowser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkshopBrowser.swift; sourceTree = "<group>"; };
 		C8BCB54F8A77D293D6152B6B /* RemoteClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteClient.swift; sourceTree = "<group>"; };
 		CA8731A8E2C4089EE0C625DF /* RemoteProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteProtocol.swift; sourceTree = "<group>"; };
 		EC34FCC0D451D16F605FBD80 /* PanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanelView.swift; sourceTree = "<group>"; };
@@ -82,6 +84,7 @@
 				36F2F02DAF6BB23430314F28 /* MacScreen.swift */,
 				EC34FCC0D451D16F605FBD80 /* PanelView.swift */,
 				199670FC19D31866A2458B8F /* UpdatesScreen.swift */,
+				C7A60A290121861E7CA7FA30 /* WorkshopBrowser.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -204,6 +207,7 @@
 				7DE9813F6720AAD0B233AC49 /* RemoteProtocol.swift in Sources */,
 				BE7CC9BE02F01B35CE244597 /* Support.swift in Sources */,
 				3B7FB587A803A44CBF0BC625 /* UpdatesScreen.swift in Sources */,
+				B5A8025EDF0D0313CB46792C /* WorkshopBrowser.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -262,7 +266,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -280,7 +284,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 1.1.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -345,7 +349,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -357,7 +361,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 1.1.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";

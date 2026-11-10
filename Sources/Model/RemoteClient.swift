@@ -451,6 +451,16 @@ final class RemoteClient {
         link.channel.send(RemoteClientMessage(seq: nextSeq(), request: .closePanel(id: id)))
     }
 
+    /// Schickt ein Item aus dem Steam Workshop an den Mac, für das Spiel dieser Seite. Zurück kommt, was der Mac
+    /// dagegen hatte.
+    func workshopAdd(_ panel: String, itemId: String) async -> String? {
+        if demo {
+            return L("This is the demo – with a paired Mac, AVP Play would load this item now.",
+                     "Das ist die Demo – mit einem gekoppelten Mac würde AVP Play dieses Item jetzt laden.")
+        }
+        return await send(.panelAction(panel: panel, item: "workshopAdd", value: itemId))
+    }
+
     /// Ein Schalter, eine Wahl oder ein Knopf einer Seite.
     func act(_ panel: String, _ item: String, value: String? = nil) {
         if demo, var page = panels[panel] {

@@ -62,6 +62,7 @@ struct PanelItemView: View {
     @State private var confirming = false
     @State private var asking = false
     @State private var answer = ""
+    @State private var browsing = false
 
     private var busy: Bool { client.busy.contains("\(panelId)/\(item.id)") }
 
@@ -141,6 +142,14 @@ struct PanelItemView: View {
                 TextField(item.prompt ?? "", text: $answer)
                 Button(L("Send", "Senden")) { client.act(panelId, item.id, value: answer) }
                 Button(L("Cancel", "Abbrechen"), role: .cancel) {}
+            }
+        case .link where item.id == "workshopBrowse":
+            // Der Workshop eines Spiels: im eigenen Browser, aus dem ein Item an den Mac geht.
+            if let text = item.value, let url = URL(string: text) {
+                Button { browsing = true } label: { Label(item.title, systemImage: "square.grid.2x2") }
+                    .sheet(isPresented: $browsing) {
+                        WorkshopBrowser(panelId: panelId, start: url).environment(client)
+                    }
             }
         case .link:
             if let text = item.value, let url = URL(string: text) {
