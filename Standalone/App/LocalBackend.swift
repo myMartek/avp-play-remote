@@ -832,7 +832,13 @@ final class LocalBackend {
                 cancelled = true
             } catch {
                 let text = Redaction.redact("\(error)")
-                failure = text.contains("staged background update")
+                failure = text.contains("already have a current")
+                    // Apple stellt je Team-Schlüssel ein Entwicklungszertifikat aus. Gibt es schon eines, dessen Schlüssel
+                    // diese App nicht hat (aus einer anderen App, oder die App wurde gelöscht), geht es hier nicht weiter.
+                    ? L("Apple issues one development certificate per team key, and this key already has one whose private key this app does not have – from another app, or from before this app was deleted. Revoke it at developer.apple.com › Certificates, IDs & Profiles › Certificates (type “Development”, name “Created via API”) and resume this job, or create a team key of its own for this headset. Games signed with the revoked certificate have to be installed again.",
+                        "Apple stellt je Team-Schlüssel ein Entwicklungszertifikat aus, und für diesen Schlüssel gibt es schon eines, dessen privaten Schlüssel diese App nicht hat – aus einer anderen App, oder aus der Zeit, bevor diese App gelöscht wurde. Widerrufe es unter developer.apple.com › Certificates, IDs & Profiles › Certificates (Typ „Development“, Name „Created via API“) und setze den Auftrag fort, oder lege für diese Brille einen eigenen Team-Schlüssel an. Spiele, die mit dem widerrufenen Zertifikat signiert sind, müssen danach neu installiert werden.")
+                    + "\n\n" + text
+                    : text.contains("staged background update")
                     ? L("The headset could not replace the installed app; it waited five minutes for it. Why is not known. Make sure the game is closed and resume this job: a second try has worked.",
                         "Die Brille konnte die installierte App nicht ersetzen; sie hat fünf Minuten darauf gewartet. Warum, ist nicht bekannt. Stelle sicher, dass das Spiel geschlossen ist, und setze den Auftrag fort: Ein zweiter Versuch hat schon geklappt.")
                     + "\n\n" + text
