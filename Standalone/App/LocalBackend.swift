@@ -332,6 +332,16 @@ final class LocalBackend {
         }
     }
 
+    /// Der Übersetzer steckt in dieser App und gehört zu genau einer Toolchain; was er übersetzt, lädt nur die Laufzeit
+    /// derselben Toolchain. Kommt mit der Übergabe die Vorlage einer anderen, muss AVP Play die App neu bauen.
+    private var translatorMismatch: String? {
+        guard let built = Bundle.main.object(forInfoDictionaryKey: "KLTranslatorToolchain") as? String, !built.isEmpty,
+              let templateName, templateName != "klepton-template-\(built).zip" else { return nil }
+        let have = templateName.dropFirst("klepton-template-".count).dropLast(4)
+        return L("The game runtime is from toolchain \(have), but this app was built for toolchain \(built). Install AVP Play Remote again from AVP Play on your Mac; it then builds the app for the new toolchain.",
+                 "Die Spiel-Laufzeit stammt aus Toolchain \(have), diese App wurde aber für Toolchain \(built) gebaut. Installiere AVP Play Remote in AVP Play am Mac neu; dabei wird die App für die neue Toolchain gebaut.")
+    }
+
     private var templateVersion: Int? {
         templateName.flatMap { name in name.split(separator: "-").dropFirst(2).first.flatMap { Int($0) } }
     }
@@ -371,6 +381,7 @@ final class LocalBackend {
         if !hasPairing { return L("The pairing with this headset is missing (see “Setup”).", "Die Kopplung mit dieser Brille fehlt (siehe „Einrichtung“).") }
         if !hasAppleKey { return L("The Apple team key is missing (see “Setup”).", "Der Team-Schlüssel von Apple fehlt (siehe „Einrichtung“).") }
         if templateName == nil { return L("The game runtime is missing (see “Setup”).", "Die Spiel-Laufzeit fehlt (siehe „Einrichtung“).") }
+        if let mismatch = translatorMismatch { return mismatch }
         return nil
     }
 
@@ -1627,8 +1638,9 @@ extension LocalBackend {
                   L("Signed in; \(facts.library) games in the library.", "Angemeldet; \(facts.library) Spiele in der Bibliothek."),
                   L("Not signed in. Without it, only games whose files your Mac handed over can be installed. ",
                     "Nicht angemeldet. Ohne sie lassen sich nur Spiele installieren, deren Dateien der Mac mitgegeben hat. ") + handedOver),
-            check("toolchain", "Toolchain", facts.toolchain != nil,
+            check("toolchain", "Toolchain", facts.toolchain != nil && translatorMismatch == nil,
                   L("Version \(facts.toolchain ?? 0) is here.", "Fassung \(facts.toolchain ?? 0) ist da."),
+                  translatorMismatch ??
                   L("Not here yet. The toolchain translates the games for the Vision Pro. ", "Noch nicht da. Die Toolchain übersetzt die Spiele für die Vision Pro. ") + handedOver),
             check("recipes", L("Game Recipes", "Rezepte der Spiele"), !recipes.isEmpty,
                   L("\(recipes.count) recipes from AVP Play are here: they name each game's files, languages and add-on content.",

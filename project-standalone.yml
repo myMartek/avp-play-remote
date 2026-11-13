@@ -3,15 +3,27 @@
 # project.yml bleibt die App, wie sie jedes Team bauen kann. Diese Datei setzt darauf auf und fügt hinzu, was nur
 # ein bezahltes Entwicklerteam bekommt und was fertige Bibliotheken braucht:
 #   - den Tunnel (eine Netzwerk-Erweiterung) samt Berechtigung,
-#   - den Quelltext unter Standalone/ und die Bibliotheken unter Standalone/Vendor/lib: libidevice_ffi.a,
-#     libkleptonld.a (Standalone/Translator mit Kleptons tools/klepton_ld.c) und probe_sign.o (Standalone/Signer).
-#     Sie werden noch von Hand gebaut; ein Skript dafür fehlt.
+#   - den Quelltext unter Standalone/ und die Bibliotheken unter Standalone/Vendor/lib (tools/build-engine.sh):
+#     libidevice_ffi.a, probe_sign.o (Standalone/Signer) und libkleptonld.a (Standalone/Translator mit Kleptons
+#     tools/klepton_ld.c).
+#
+# Das erzeugte Projekt und die zwei erzeugten Info.plist sind eingecheckt wie AVPPlayRemote.xcodeproj: Wer die App
+# baut (AVP Play auf dem Mac eines Nutzers), hat kein xcodegen.
 #
 #   xcodegen generate --spec project-standalone.yml
 include:
   - project.yml
 # Ein eigener Projektname, damit das eingecheckte AVPPlayRemote.xcodeproj bleibt, wie es ist.
 name: AVPPlayRemoteStandalone
+settings:
+  base:
+    # Die App-Kennung als eigene Einstellung: Die Tunnel-Erweiterung hängt „.Tunnel“ daran. Wer mit einer anderen
+    # Kennung baut (AVP Play mit der des Nutzers), setzt AVPPLAY_REMOTE_BUNDLE_ID – PRODUCT_BUNDLE_IDENTIFIER auf der
+    # Kommandozeile träfe beide Teile und gäbe ihnen dieselbe Kennung.
+    AVPPLAY_REMOTE_BUNDLE_ID: io.github.mymartek.avpplay.remote
+    # Die Toolchain, aus der der Übersetzer in Standalone/Vendor/lib stammt („<Nummer>-<Commit>“). Die App baut
+    # Spiele nur mit der Laufzeit-Vorlage derselben Toolchain. Leer: nicht geprüft (Entwicklung).
+    AVPPLAY_TRANSLATOR_TOOLCHAIN: ""
 targets:
   AVPPlayRemote:
     # Die Quellen der App, ohne ihre Info.plist: Diese Fassung hat eine eigene (erzeugt, nicht eingecheckt), weil
@@ -32,9 +44,11 @@ targets:
       properties:
         NSLocalNetworkUsageDescription: AVP Play Remote looks for AVP Play on the Macs in your network to show and install your games, and for the pairing service of this headset to install games without a Mac.
         NSBonjourServices:REPLACE: [_avpplay._tcp, _remotepairing-manual-pairing._tcp]
+        KLTranslatorToolchain: $(AVPPLAY_TRANSLATOR_TOOLCHAIN)
     settings:
       base:
         SWIFT_ACTIVE_COMPILATION_CONDITIONS: "$(inherited) STANDALONE"
+        PRODUCT_BUNDLE_IDENTIFIER: $(AVPPLAY_REMOTE_BUNDLE_ID)
         CODE_SIGN_ENTITLEMENTS: Standalone/App/Standalone.entitlements
         SWIFT_INCLUDE_PATHS: "$(SRCROOT)/Standalone/Vendor/include/idevice $(SRCROOT)/Standalone/Vendor/include/Signer $(SRCROOT)/Standalone/Vendor/include/KleptonLD"
         LIBRARY_SEARCH_PATHS: "$(inherited) $(SRCROOT)/Standalone/Vendor/lib/$(PLATFORM_NAME)"
@@ -64,7 +78,7 @@ targets:
           NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).PacketTunnelProvider
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: io.github.mymartek.avpplay.remote.Tunnel
+        PRODUCT_BUNDLE_IDENTIFIER: $(AVPPLAY_REMOTE_BUNDLE_ID).Tunnel
         PRODUCT_NAME: AVPPlayRemoteTunnel
         CODE_SIGN_STYLE: Automatic
         TARGETED_DEVICE_FAMILY: "7"

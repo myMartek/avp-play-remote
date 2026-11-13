@@ -17,6 +17,40 @@ newest release from this repository, builds it with your own Apple team (like th
 Pro. With a free Apple team the app counts towards the three apps such a team may have on the device, and it has to
 be installed again every seven days, like the games.
 
+## Installing games without a Mac
+
+Since version 1.2 the app can also do the work itself: with *This Headset (without a Mac)* in the Mac menu it
+downloads a game from Meta, builds its app, signs it and installs it – on the Vision Pro, while the Mac is off. The
+pages are the same as with a Mac.
+
+What you need:
+
+- **A paid Apple Developer Program membership.** The app reaches the headset's own installation service through a
+  small loopback VPN of its own (a Network Extension), which a free team cannot have.
+- **AVP Play 1.12 or newer on a Mac, once.** On the page *AVP Play Remote*, switch on *Installing Games Without a
+  Mac* and install the app again. AVP Play then builds this part into it and hands over what only a Mac can provide:
+  the runtime of the toolchain, the recipes of the games, your Meta library and – each only if you say so – your
+  Apple team key and your Meta sign-in.
+- **A team key for the App Store Connect API** (role *App Manager*). Enter it in AVP Play, or in the app under
+  *Setup*, where a short guide says how to create one. With it the headset gets a certificate, an app identifier
+  and a profile per game from Apple itself.
+- **Pairing with the headset**, in the app under *Setup*: open Settings › General › Remote Devices on the headset,
+  tap *Pair* and enter the code the headset shows.
+
+What goes where:
+
+- The Meta sign-in stays in the app's keychain on your headset and is sent to Meta only, with the same rules as on
+  the Mac: ownership is checked before anything is downloaded.
+- The team key stays in the app and is sent to Apple only. New app identifiers are created through the interface
+  Xcode itself uses for that (not a documented one), because only there a game gets the memory entitlements it needs;
+  everything else uses the App Store Connect API.
+- Nothing goes to anyone else. Ratings and notes come from AVP Play's catalogue as before; only game IDs are sent
+  there.
+
+Limits: games from Steam and games that are not an Android app are installed from the Mac only; saved games are
+copied to the Mac by AVP Play, not by the app; and after a new toolchain AVP Play has to build the app again (it
+says so), because the translator in it belongs to one toolchain.
+
 ## How it connects
 
 - AVP Play on the Mac (Settings › Remote control) listens on TCP port 47811 and shows itself in the local network
@@ -45,6 +79,25 @@ From the command line:
 xcodebuild -project AVPPlayRemote.xcodeproj -scheme AVPPlayRemote \
   -destination 'generic/platform=visionOS' -allowProvisioningUpdates DEVELOPMENT_TEAM=<TEAM> build
 ```
+
+### The headset part
+
+`project-standalone.yml` adds the part that installs games on the headset to `project.yml`: the sources under
+`Standalone/`, a packet tunnel extension and three libraries under `Standalone/Vendor/lib/xros`, which are built, not
+checked in:
+
+```sh
+tools/build-engine.sh                       # the device library (jkcoxson/idevice) and the signer
+tools/build-engine.sh translator <folder>   # the translator, from a Klepton toolchain
+xcodebuild -project AVPPlayRemoteStandalone.xcodeproj -scheme AVPPlayRemote -destination 'generic/platform=visionOS' \
+    -allowProvisioningUpdates DEVELOPMENT_TEAM=<team> AVPPLAY_REMOTE_BUNDLE_ID=<bundle id> build
+```
+
+The first two are the same for every user and hang on each release as `avp-play-remote-headset-libs-<version>.zip`
+(`Standalone/Vendor/libs.json` names its checksum; AVP Play checks it). The translator belongs to exactly one
+toolchain, so AVP Play builds it on your Mac from the toolchain installed there and passes its name as
+`AVPPLAY_TRANSLATOR_TOOLCHAIN`. `Standalone/Shared/` holds files of AVP Play unchanged (`tools/sync-meta.sh` copies
+and checks them). Licences of what the libraries contain: [THIRD-PARTY.md](THIRD-PARTY.md).
 
 ## The shared protocol
 

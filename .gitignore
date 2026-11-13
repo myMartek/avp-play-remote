@@ -12,10 +12,7 @@ Gemfile.lock
 fastlane/
 
 # „Auf dieser Brille“: Die Kopfdateien der Bibliotheken gehören dazu (die Regel „vendor/“ oben träfe sie sonst);
-# die Bibliotheken selbst werden gebaut, nicht eingecheckt. Ein Skript dafür fehlt noch.
+# die Bibliotheken selbst werden gebaut (tools/build-engine.sh), nicht eingecheckt.
 !Standalone/Vendor/
 Standalone/Vendor/lib/
 Standalone/Signer/target/
-Standalone/Tunnel/Info.plist
-Standalone/App/Info.plist
-AVPPlayRemoteStandalone.xcodeproj/

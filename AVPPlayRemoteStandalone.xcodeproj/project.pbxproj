@@ -1,0 +1,703 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		01BC045DE24CEC0E8CD3499A /* AXML.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734EEB77F4AD5FDCAF7BE28F /* AXML.swift */; };
+		04CEE2029F9AB187AAB1B1A2 /* Recipe.swift in Sources */ = {isa = PBXBuildFile; fileRef = C338F0A5E724AE2329C84186 /* Recipe.swift */; };
+		207EC4836E58A0F66E55E289 /* AppleKeySetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69E0B30897B3CB759E9987F /* AppleKeySetup.swift */; };
+		228944CDD66675E0EF27DA92 /* StagePlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A63B1D12EB0F969D76C7F54 /* StagePlan.swift */; };
+		248F11F065FEF9C1D98696CA /* Hashing.swift in Sources */ = {isa = PBXBuildFile; fileRef = D70CFD7CF6A41ACBBD057C22 /* Hashing.swift */; };
+		30A581160FBFAB7AE76D8555 /* Demo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 337CB5B0652BF2D9AF2C05A2 /* Demo.swift */; };
+		33BE4C7EADCB39FD0A38E623 /* Translate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59D271045EA9057AA4D3476C /* Translate.swift */; };
+		3B362DEB01BAAEEC22CE367C /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4BB6E76DF5CED86DB159131D /* NetworkExtension.framework */; };
+		4071E1D8785C9032ABD31D49 /* RemoteProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3D55E8D9CE1A787B058AC5E /* RemoteProtocol.swift */; };
+		41FB4D23C0E22EA859A090C9 /* StoreArt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974D8F4D3AF0950B9A9CF3D5 /* StoreArt.swift */; };
+		424156495AC0A0413F676E5D /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03546D4D7DEA1EFB3BFF9F9A /* CFNetwork.framework */; };
+		42E7E1A3668111D8038527C2 /* Support.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62454F4CFE1F52BA51F2E107 /* Support.swift */; };
+		437119866C18C0246D0AE2E5 /* PanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88B9F07FF0F8082AAA267AD1 /* PanelView.swift */; };
+		4B35F8E00A4AC7FD90A1D00A /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4BB6E76DF5CED86DB159131D /* NetworkExtension.framework */; };
+		50FEC900FC4B13AAF060C4C7 /* Pairing.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0B22A52A93DB0DF424A66E1 /* Pairing.swift */; };
+		67B0B1888C1BDCACE833255E /* JobsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6495B4F18532A37A789E34 /* JobsScreen.swift */; };
+		6B264FE5EBA977BF7765CDEE /* PacketTunnelProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D0280F962EA39674108AF43 /* PacketTunnelProvider.swift */; };
+		6E072754383EFCF670C41BDA /* Finish.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD1794FEA4C31555E3A9E8B /* Finish.swift */; };
+		7425AC129D86D676A1FC990E /* AVPPlayRemoteTunnel.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = F57B469FBAA3985CCBF2B19D /* AVPPlayRemoteTunnel.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		75D9237B3BCD18A70A167107 /* LocalSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300D53D59843018923DC4456 /* LocalSupport.swift */; };
+		76144124E2AC78A01BFDF195 /* AssetFiles.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3D68F0A1FA5ADF29CA490B6 /* AssetFiles.swift */; };
+		7722BFF3F466C9DF14F20A2C /* PairingSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B64B2B25F2ED2B2BDDAA0A2 /* PairingSetup.swift */; };
+		86ABF64E8C1093A2F078249E /* HookPrepare.swift in Sources */ = {isa = PBXBuildFile; fileRef = 605194834FE6CA293CDEB00E /* HookPrepare.swift */; };
+		8B1FBE57D66113F80E74E70C /* Demo.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E5DC6C9A36C9424BA0FB4740 /* Demo.xcassets */; };
+		8B70DCAE061106D49BCF26E7 /* AVPPlayRemoteApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD5426527FB4845CBA47638E /* AVPPlayRemoteApp.swift */; };
+		91212F0A720781824323024F /* GameDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = D22BC07D7C588B246AFFF3D1 /* GameDetail.swift */; };
+		9C338C3EAC2FA34729955062 /* UpdatesScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADCD3ADC86F8FA9F2DA15A6D /* UpdatesScreen.swift */; };
+		9ECDD0FF14ACE3535C370E52 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 565A9631A41D55C06B4A96D5 /* Assets.xcassets */; };
+		A4DDC5563C12658ACF3A8776 /* RemoteClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46FBAF2823D6D3AE8BFEA02B /* RemoteClient.swift */; };
+		AD753C0419D7DB25AC129595 /* WorkshopBrowser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E0F2857EF69012C8E87313F /* WorkshopBrowser.swift */; };
+		B4171E10AC7D61A250CF6AA8 /* Zip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07900E08EFBE1D88CC5B2A6B /* Zip.swift */; };
+		B5BBF169F6EA2E61071B1B9D /* LocalBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = F639108DDD12D4D636B1825A /* LocalBackend.swift */; };
+		BBDEC3A12432D01646E1F749 /* AppleAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = D38A474723C08F5F0251BEF7 /* AppleAPI.swift */; };
+		C184A5F8CD8149D27EDDE4E0 /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DB04AF5563A2D21B5E01ADD /* Common.swift */; };
+		C1C3CFB3BA671B5E227901E8 /* RecipeShim.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8A557D9ECA139C2DDE2662D /* RecipeShim.swift */; };
+		C55AD3F5606A4987826278B3 /* ContentStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35CB3A49A6FB85F37130F508 /* ContentStore.swift */; };
+		C68CA07FCE0F24607722C7EE /* GamesScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 492E1C1F7EBD452490174DA0 /* GamesScreen.swift */; };
+		D2E075BC60C166801C6177BC /* FetchPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 406FCFE5EB46DACB53B993C2 /* FetchPlan.swift */; };
+		DCDA03AE336287AD451887E5 /* MetaShim.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50779CE643FDB7E012D90B96 /* MetaShim.swift */; };
+		DF9FA1382CBACF9C0533CF26 /* MacScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 108DF6BEC923A6F203448EAA /* MacScreen.swift */; };
+		E0ADE5831FA241B3160C01F1 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D94B408CBA97522A0109BDC0 /* SystemConfiguration.framework */; };
+		E5B288122591A4A70854E098 /* DeviceLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7444D513A3B2A4CFE925479 /* DeviceLink.swift */; };
+		F465D0FD142B51E734CB6627 /* SignCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F9CDE1A918E2B9026EF9263 /* SignCore.swift */; };
+		F4E394FF5EAD405623989621 /* MetaClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87DD3E78378820E957C530CF /* MetaClient.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		C8ED243E8C23C226DEC46F27 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 534ED015BA1DD26117F4AFDA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0EFC46EA0EA58F32623CE9F5;
+			remoteInfo = AVPPlayRemoteTunnel;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		4F8B6C006365A8F48A43EA10 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				7425AC129D86D676A1FC990E /* AVPPlayRemoteTunnel.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		03546D4D7DEA1EFB3BFF9F9A /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		07900E08EFBE1D88CC5B2A6B /* Zip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Zip.swift; sourceTree = "<group>"; };
+		0A63B1D12EB0F969D76C7F54 /* StagePlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StagePlan.swift; sourceTree = "<group>"; };
+		0DB04AF5563A2D21B5E01ADD /* Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
+		108DF6BEC923A6F203448EAA /* MacScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacScreen.swift; sourceTree = "<group>"; };
+		300D53D59843018923DC4456 /* LocalSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalSupport.swift; sourceTree = "<group>"; };
+		337CB5B0652BF2D9AF2C05A2 /* Demo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Demo.swift; sourceTree = "<group>"; };
+		35CB3A49A6FB85F37130F508 /* ContentStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentStore.swift; sourceTree = "<group>"; };
+		36517B2B21AA746A99DC718B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		3B64B2B25F2ED2B2BDDAA0A2 /* PairingSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PairingSetup.swift; sourceTree = "<group>"; };
+		3D52AC2F9B22B0D4F0DAFCDC /* AVPPlayRemote.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = AVPPlayRemote.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3E0F2857EF69012C8E87313F /* WorkshopBrowser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkshopBrowser.swift; sourceTree = "<group>"; };
+		406FCFE5EB46DACB53B993C2 /* FetchPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchPlan.swift; sourceTree = "<group>"; };
+		46FBAF2823D6D3AE8BFEA02B /* RemoteClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteClient.swift; sourceTree = "<group>"; };
+		492E1C1F7EBD452490174DA0 /* GamesScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamesScreen.swift; sourceTree = "<group>"; };
+		4BB6E76DF5CED86DB159131D /* NetworkExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NetworkExtension.framework; path = System/Library/Frameworks/NetworkExtension.framework; sourceTree = SDKROOT; };
+		4CD1794FEA4C31555E3A9E8B /* Finish.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Finish.swift; sourceTree = "<group>"; };
+		4D0280F962EA39674108AF43 /* PacketTunnelProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacketTunnelProvider.swift; sourceTree = "<group>"; };
+		50779CE643FDB7E012D90B96 /* MetaShim.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetaShim.swift; sourceTree = "<group>"; };
+		565A9631A41D55C06B4A96D5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		59D271045EA9057AA4D3476C /* Translate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Translate.swift; sourceTree = "<group>"; };
+		605194834FE6CA293CDEB00E /* HookPrepare.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HookPrepare.swift; sourceTree = "<group>"; };
+		62454F4CFE1F52BA51F2E107 /* Support.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Support.swift; sourceTree = "<group>"; };
+		734EEB77F4AD5FDCAF7BE28F /* AXML.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AXML.swift; sourceTree = "<group>"; };
+		7F9CDE1A918E2B9026EF9263 /* SignCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignCore.swift; sourceTree = "<group>"; };
+		87DD3E78378820E957C530CF /* MetaClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetaClient.swift; sourceTree = "<group>"; };
+		88B9F07FF0F8082AAA267AD1 /* PanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanelView.swift; sourceTree = "<group>"; };
+		8A6495B4F18532A37A789E34 /* JobsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobsScreen.swift; sourceTree = "<group>"; };
+		974D8F4D3AF0950B9A9CF3D5 /* StoreArt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreArt.swift; sourceTree = "<group>"; };
+		A0B22A52A93DB0DF424A66E1 /* Pairing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pairing.swift; sourceTree = "<group>"; };
+		A3D68F0A1FA5ADF29CA490B6 /* AssetFiles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetFiles.swift; sourceTree = "<group>"; };
+		A7444D513A3B2A4CFE925479 /* DeviceLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceLink.swift; sourceTree = "<group>"; };
+		ADCD3ADC86F8FA9F2DA15A6D /* UpdatesScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdatesScreen.swift; sourceTree = "<group>"; };
+		C338F0A5E724AE2329C84186 /* Recipe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Recipe.swift; sourceTree = "<group>"; };
+		C69E0B30897B3CB759E9987F /* AppleKeySetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleKeySetup.swift; sourceTree = "<group>"; };
+		D22BC07D7C588B246AFFF3D1 /* GameDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameDetail.swift; sourceTree = "<group>"; };
+		D38A474723C08F5F0251BEF7 /* AppleAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleAPI.swift; sourceTree = "<group>"; };
+		D70CFD7CF6A41ACBBD057C22 /* Hashing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hashing.swift; sourceTree = "<group>"; };
+		D94B408CBA97522A0109BDC0 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		E3D55E8D9CE1A787B058AC5E /* RemoteProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteProtocol.swift; sourceTree = "<group>"; };
+		E5DC6C9A36C9424BA0FB4740 /* Demo.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Demo.xcassets; sourceTree = "<group>"; };
+		F57B469FBAA3985CCBF2B19D /* AVPPlayRemoteTunnel.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = AVPPlayRemoteTunnel.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		F639108DDD12D4D636B1825A /* LocalBackend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalBackend.swift; sourceTree = "<group>"; };
+		F8A557D9ECA139C2DDE2662D /* RecipeShim.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeShim.swift; sourceTree = "<group>"; };
+		FD5426527FB4845CBA47638E /* AVPPlayRemoteApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVPPlayRemoteApp.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		B536C4C3F068985ED9CBF7C1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3B362DEB01BAAEEC22CE367C /* NetworkExtension.framework in Frameworks */,
+				E0ADE5831FA241B3160C01F1 /* SystemConfiguration.framework in Frameworks */,
+				424156495AC0A0413F676E5D /* CFNetwork.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C47A6C52816A0DCE707F83D4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4B35F8E00A4AC7FD90A1D00A /* NetworkExtension.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		056B2ED45FE957B46876392F /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				C20051F803D3C8DEB8C28836 /* App */,
+				9A02B17B69676385B1B7A5C6 /* Model */,
+				B7A175459F53B53ECAC54D69 /* Shared */,
+				F33B375DB613D1A714FA5DE8 /* Views */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		116FAC16E3F88C4813CAD588 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				03546D4D7DEA1EFB3BFF9F9A /* CFNetwork.framework */,
+				4BB6E76DF5CED86DB159131D /* NetworkExtension.framework */,
+				D94B408CBA97522A0109BDC0 /* SystemConfiguration.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		1EA8D643B73A058A7001EB67 /* Engine */ = {
+			isa = PBXGroup;
+			children = (
+				D38A474723C08F5F0251BEF7 /* AppleAPI.swift */,
+				734EEB77F4AD5FDCAF7BE28F /* AXML.swift */,
+				A7444D513A3B2A4CFE925479 /* DeviceLink.swift */,
+				4CD1794FEA4C31555E3A9E8B /* Finish.swift */,
+				605194834FE6CA293CDEB00E /* HookPrepare.swift */,
+				A0B22A52A93DB0DF424A66E1 /* Pairing.swift */,
+				7F9CDE1A918E2B9026EF9263 /* SignCore.swift */,
+				59D271045EA9057AA4D3476C /* Translate.swift */,
+				07900E08EFBE1D88CC5B2A6B /* Zip.swift */,
+			);
+			path = Engine;
+			sourceTree = "<group>";
+		};
+		227F07FB2DC1AA5C250EEB30 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				C69E0B30897B3CB759E9987F /* AppleKeySetup.swift */,
+				F639108DDD12D4D636B1825A /* LocalBackend.swift */,
+				300D53D59843018923DC4456 /* LocalSupport.swift */,
+				3B64B2B25F2ED2B2BDDAA0A2 /* PairingSetup.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		264A10B3418337AB86C1CC09 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				565A9631A41D55C06B4A96D5 /* Assets.xcassets */,
+				E5DC6C9A36C9424BA0FB4740 /* Demo.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		47CBBAC7ABF11BE2B108A467 /* Tunnel */ = {
+			isa = PBXGroup;
+			children = (
+				36517B2B21AA746A99DC718B /* Info.plist */,
+				4D0280F962EA39674108AF43 /* PacketTunnelProvider.swift */,
+			);
+			path = Tunnel;
+			sourceTree = "<group>";
+		};
+		55E8152983283D515335CAA5 = {
+			isa = PBXGroup;
+			children = (
+				264A10B3418337AB86C1CC09 /* Resources */,
+				056B2ED45FE957B46876392F /* Sources */,
+				7ED32DE786F14093F46044F9 /* Standalone */,
+				116FAC16E3F88C4813CAD588 /* Frameworks */,
+				DDA5429AD77A3C519276ED2E /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		7ED32DE786F14093F46044F9 /* Standalone */ = {
+			isa = PBXGroup;
+			children = (
+				227F07FB2DC1AA5C250EEB30 /* App */,
+				1EA8D643B73A058A7001EB67 /* Engine */,
+				A9275ECD08A22A5AD4D0B5CE /* Shared */,
+				47CBBAC7ABF11BE2B108A467 /* Tunnel */,
+			);
+			path = Standalone;
+			sourceTree = "<group>";
+		};
+		9A02B17B69676385B1B7A5C6 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				337CB5B0652BF2D9AF2C05A2 /* Demo.swift */,
+				46FBAF2823D6D3AE8BFEA02B /* RemoteClient.swift */,
+				62454F4CFE1F52BA51F2E107 /* Support.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		A9275ECD08A22A5AD4D0B5CE /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				A3D68F0A1FA5ADF29CA490B6 /* AssetFiles.swift */,
+				35CB3A49A6FB85F37130F508 /* ContentStore.swift */,
+				406FCFE5EB46DACB53B993C2 /* FetchPlan.swift */,
+				D70CFD7CF6A41ACBBD057C22 /* Hashing.swift */,
+				87DD3E78378820E957C530CF /* MetaClient.swift */,
+				50779CE643FDB7E012D90B96 /* MetaShim.swift */,
+				C338F0A5E724AE2329C84186 /* Recipe.swift */,
+				F8A557D9ECA139C2DDE2662D /* RecipeShim.swift */,
+				0A63B1D12EB0F969D76C7F54 /* StagePlan.swift */,
+				974D8F4D3AF0950B9A9CF3D5 /* StoreArt.swift */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		B7A175459F53B53ECAC54D69 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				E3D55E8D9CE1A787B058AC5E /* RemoteProtocol.swift */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		C20051F803D3C8DEB8C28836 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				FD5426527FB4845CBA47638E /* AVPPlayRemoteApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		DDA5429AD77A3C519276ED2E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				3D52AC2F9B22B0D4F0DAFCDC /* AVPPlayRemote.app */,
+				F57B469FBAA3985CCBF2B19D /* AVPPlayRemoteTunnel.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		F33B375DB613D1A714FA5DE8 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				0DB04AF5563A2D21B5E01ADD /* Common.swift */,
+				D22BC07D7C588B246AFFF3D1 /* GameDetail.swift */,
+				492E1C1F7EBD452490174DA0 /* GamesScreen.swift */,
+				8A6495B4F18532A37A789E34 /* JobsScreen.swift */,
+				108DF6BEC923A6F203448EAA /* MacScreen.swift */,
+				88B9F07FF0F8082AAA267AD1 /* PanelView.swift */,
+				ADCD3ADC86F8FA9F2DA15A6D /* UpdatesScreen.swift */,
+				3E0F2857EF69012C8E87313F /* WorkshopBrowser.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		0290BC161086FBEDA9AC3936 /* AVPPlayRemote */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4C7EC7AB8BEC4C400E8E9EFC /* Build configuration list for PBXNativeTarget "AVPPlayRemote" */;
+			buildPhases = (
+				E54AE2EF26CB5FB9773D6B59 /* Sources */,
+				500DFA1BFCEC712517538688 /* Resources */,
+				B536C4C3F068985ED9CBF7C1 /* Frameworks */,
+				4F8B6C006365A8F48A43EA10 /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				7BD2941A75AB2440BF9DB23A /* PBXTargetDependency */,
+			);
+			name = AVPPlayRemote;
+			packageProductDependencies = (
+			);
+			productName = AVPPlayRemote;
+			productReference = 3D52AC2F9B22B0D4F0DAFCDC /* AVPPlayRemote.app */;
+			productType = "com.apple.product-type.application";
+		};
+		0EFC46EA0EA58F32623CE9F5 /* AVPPlayRemoteTunnel */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5D97E0DECDFAB378DA623854 /* Build configuration list for PBXNativeTarget "AVPPlayRemoteTunnel" */;
+			buildPhases = (
+				9E3DA085C247A59A05450993 /* Sources */,
+				C47A6C52816A0DCE707F83D4 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AVPPlayRemoteTunnel;
+			packageProductDependencies = (
+			);
+			productName = AVPPlayRemoteTunnel;
+			productReference = F57B469FBAA3985CCBF2B19D /* AVPPlayRemoteTunnel.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		534ED015BA1DD26117F4AFDA /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					0290BC161086FBEDA9AC3936 = {
+						ProvisioningStyle = Automatic;
+					};
+					0EFC46EA0EA58F32623CE9F5 = {
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = B94F5EE5F4783013B6172967 /* Build configuration list for PBXProject "AVPPlayRemoteStandalone" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 55E8152983283D515335CAA5;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = DDA5429AD77A3C519276ED2E /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				0290BC161086FBEDA9AC3936 /* AVPPlayRemote */,
+				0EFC46EA0EA58F32623CE9F5 /* AVPPlayRemoteTunnel */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		500DFA1BFCEC712517538688 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9ECDD0FF14ACE3535C370E52 /* Assets.xcassets in Resources */,
+				8B1FBE57D66113F80E74E70C /* Demo.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		9E3DA085C247A59A05450993 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6B264FE5EBA977BF7765CDEE /* PacketTunnelProvider.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E54AE2EF26CB5FB9773D6B59 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8B70DCAE061106D49BCF26E7 /* AVPPlayRemoteApp.swift in Sources */,
+				01BC045DE24CEC0E8CD3499A /* AXML.swift in Sources */,
+				BBDEC3A12432D01646E1F749 /* AppleAPI.swift in Sources */,
+				207EC4836E58A0F66E55E289 /* AppleKeySetup.swift in Sources */,
+				76144124E2AC78A01BFDF195 /* AssetFiles.swift in Sources */,
+				C184A5F8CD8149D27EDDE4E0 /* Common.swift in Sources */,
+				C55AD3F5606A4987826278B3 /* ContentStore.swift in Sources */,
+				30A581160FBFAB7AE76D8555 /* Demo.swift in Sources */,
+				E5B288122591A4A70854E098 /* DeviceLink.swift in Sources */,
+				D2E075BC60C166801C6177BC /* FetchPlan.swift in Sources */,
+				6E072754383EFCF670C41BDA /* Finish.swift in Sources */,
+				91212F0A720781824323024F /* GameDetail.swift in Sources */,
+				C68CA07FCE0F24607722C7EE /* GamesScreen.swift in Sources */,
+				248F11F065FEF9C1D98696CA /* Hashing.swift in Sources */,
+				86ABF64E8C1093A2F078249E /* HookPrepare.swift in Sources */,
+				67B0B1888C1BDCACE833255E /* JobsScreen.swift in Sources */,
+				B5BBF169F6EA2E61071B1B9D /* LocalBackend.swift in Sources */,
+				75D9237B3BCD18A70A167107 /* LocalSupport.swift in Sources */,
+				DF9FA1382CBACF9C0533CF26 /* MacScreen.swift in Sources */,
+				F4E394FF5EAD405623989621 /* MetaClient.swift in Sources */,
+				DCDA03AE336287AD451887E5 /* MetaShim.swift in Sources */,
+				50FEC900FC4B13AAF060C4C7 /* Pairing.swift in Sources */,
+				7722BFF3F466C9DF14F20A2C /* PairingSetup.swift in Sources */,
+				437119866C18C0246D0AE2E5 /* PanelView.swift in Sources */,
+				04CEE2029F9AB187AAB1B1A2 /* Recipe.swift in Sources */,
+				C1C3CFB3BA671B5E227901E8 /* RecipeShim.swift in Sources */,
+				A4DDC5563C12658ACF3A8776 /* RemoteClient.swift in Sources */,
+				4071E1D8785C9032ABD31D49 /* RemoteProtocol.swift in Sources */,
+				F465D0FD142B51E734CB6627 /* SignCore.swift in Sources */,
+				228944CDD66675E0EF27DA92 /* StagePlan.swift in Sources */,
+				41FB4D23C0E22EA859A090C9 /* StoreArt.swift in Sources */,
+				42E7E1A3668111D8038527C2 /* Support.swift in Sources */,
+				33BE4C7EADCB39FD0A38E623 /* Translate.swift in Sources */,
+				9C338C3EAC2FA34729955062 /* UpdatesScreen.swift in Sources */,
+				AD753C0419D7DB25AC129595 /* WorkshopBrowser.swift in Sources */,
+				B4171E10AC7D61A250CF6AA8 /* Zip.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		7BD2941A75AB2440BF9DB23A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 0EFC46EA0EA58F32623CE9F5 /* AVPPlayRemoteTunnel */;
+			targetProxy = C8ED243E8C23C226DEC46F27 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		07193766819D1AAFB5DC6FA7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Standalone/App/Standalone.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = Standalone/App/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = "$(inherited) $(SRCROOT)/Standalone/Vendor/lib/$(PLATFORM_NAME)";
+				OTHER_LDFLAGS = "$(inherited) -lidevice_ffi -lkleptonld $(SRCROOT)/Standalone/Vendor/lib/$(PLATFORM_NAME)/probe_sign.o -lbz2";
+				PRODUCT_BUNDLE_IDENTIFIER = "$(AVPPLAY_REMOTE_BUNDLE_ID)";
+				PRODUCT_NAME = AVPPlayRemote;
+				SDKROOT = xros;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) STANDALONE";
+				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/Standalone/Vendor/include/idevice $(SRCROOT)/Standalone/Vendor/include/Signer $(SRCROOT)/Standalone/Vendor/include/KleptonLD";
+				TARGETED_DEVICE_FAMILY = 7;
+			};
+			name = Debug;
+		};
+		132F663B6AE2A8978FE38B67 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				AVPPLAY_REMOTE_BUNDLE_ID = io.github.mymartek.avpplay.remote;
+				AVPPLAY_TRANSLATOR_TOOLCHAIN = "";
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 3;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MARKETING_VERSION = 1.2.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = xros;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				XROS_DEPLOYMENT_TARGET = 26.0;
+			};
+			name = Release;
+		};
+		71F759281540D59ECEAF418C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = Standalone/Tunnel/Tunnel.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = Standalone/Tunnel/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "$(AVPPLAY_REMOTE_BUNDLE_ID).Tunnel";
+				PRODUCT_NAME = AVPPlayRemoteTunnel;
+				SDKROOT = xros;
+				TARGETED_DEVICE_FAMILY = 7;
+			};
+			name = Release;
+		};
+		78B49DE357A30DE941D9FA6D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Standalone/App/Standalone.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = Standalone/App/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = "$(inherited) $(SRCROOT)/Standalone/Vendor/lib/$(PLATFORM_NAME)";
+				OTHER_LDFLAGS = "$(inherited) -lidevice_ffi -lkleptonld $(SRCROOT)/Standalone/Vendor/lib/$(PLATFORM_NAME)/probe_sign.o -lbz2";
+				PRODUCT_BUNDLE_IDENTIFIER = "$(AVPPLAY_REMOTE_BUNDLE_ID)";
+				PRODUCT_NAME = AVPPlayRemote;
+				SDKROOT = xros;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) STANDALONE";
+				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/Standalone/Vendor/include/idevice $(SRCROOT)/Standalone/Vendor/include/Signer $(SRCROOT)/Standalone/Vendor/include/KleptonLD";
+				TARGETED_DEVICE_FAMILY = 7;
+			};
+			name = Release;
+		};
+		CB2AF7C7BC0B467563CC8F43 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = Standalone/Tunnel/Tunnel.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = Standalone/Tunnel/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "$(AVPPLAY_REMOTE_BUNDLE_ID).Tunnel";
+				PRODUCT_NAME = AVPPlayRemoteTunnel;
+				SDKROOT = xros;
+				TARGETED_DEVICE_FAMILY = 7;
+			};
+			name = Debug;
+		};
+		F07C8F170DF016A9A60F86B7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				AVPPLAY_REMOTE_BUNDLE_ID = io.github.mymartek.avpplay.remote;
+				AVPPLAY_TRANSLATOR_TOOLCHAIN = "";
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 3;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MARKETING_VERSION = 1.2.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = xros;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				XROS_DEPLOYMENT_TARGET = 26.0;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		4C7EC7AB8BEC4C400E8E9EFC /* Build configuration list for PBXNativeTarget "AVPPlayRemote" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				07193766819D1AAFB5DC6FA7 /* Debug */,
+				78B49DE357A30DE941D9FA6D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		5D97E0DECDFAB378DA623854 /* Build configuration list for PBXNativeTarget "AVPPlayRemoteTunnel" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CB2AF7C7BC0B467563CC8F43 /* Debug */,
+				71F759281540D59ECEAF418C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		B94F5EE5F4783013B6172967 /* Build configuration list for PBXProject "AVPPlayRemoteStandalone" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F07C8F170DF016A9A60F86B7 /* Debug */,
+				132F663B6AE2A8978FE38B67 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 534ED015BA1DD26117F4AFDA /* Project object */;
+}
