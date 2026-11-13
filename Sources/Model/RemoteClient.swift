@@ -126,6 +126,8 @@ final class RemoteClient {
             if UserDefaults.standard.bool(forKey: "AVPRemoteDemo"), !demo { startDemo() }
             #endif
             #if STANDALONE
+            // AVP Play auf dem Mac erkennt daran, dass diese Fassung eine Übergabe annimmt.
+            LocalBackend.announce()
             // Wer zuletzt auf der Brille selbst gearbeitet hat, ist beim nächsten Start wieder dort.
             if UserDefaults.standard.bool(forKey: "AVPRemoteLocal"), !local, !demo { startLocal() }
             #endif

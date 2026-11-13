@@ -35,6 +35,23 @@ final class LocalBackend {
     nonisolated static let logFile = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
         .appendingPathComponent("standalone.log")
 
+    /// Legt bei jedem Start die Datei `Documents/standalone.json` an. AVP Play übergibt nur einer Remote etwas, in
+    /// deren Ordner sie liegt (`CompanionHandover.marker`): Eine Fassung, die die Übergabe nie liest, soll keine
+    /// Zugangsdaten in ihrem Ordner liegen haben.
+    nonisolated static func announce() {
+        let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? ""
+        let facts: [String: Any] = ["handover": 1, "version": version]
+        guard let data = try? JSONSerialization.data(withJSONObject: facts, options: [.sortedKeys]) else { return }
+        try? data.write(to: handover.deletingLastPathComponent().appendingPathComponent("standalone.json"), options: .atomic)
+    }
+
+    /// Der Port, unter dem die Brille ihren Tunneldienst anbietet: aus der Übergabe, sonst der übliche.
+    nonisolated static func tunnelPort() -> UInt16 {
+        let facts = (try? Data(contentsOf: home.appendingPathComponent("handover.json")))
+            .flatMap { try? JSONSerialization.jsonObject(with: $0) as? [String: Any] }
+        return (facts?["pairingPort"] as? Int).flatMap { UInt16(exactly: $0) } ?? 49152
+    }
+
     // MARK: Was die Brille weiß
 
     /// Ein Eintrag des Katalogs von AVP Play: Einstufung, Meldungen, Hinweise.
@@ -1600,7 +1617,8 @@ extension LocalBackend {
             check("device", "Vision Pro", facts.pairing,
                   L("\(facts.device) is paired with itself: games are installed through its own installation service.",
                     "\(facts.device) ist mit sich selbst gekoppelt: Spiele werden über ihren eigenen Installationsdienst installiert."),
-                  L("The pairing with this headset is missing. ", "Die Kopplung mit dieser Brille fehlt. ") + handedOver),
+                  L("This app is not paired with this headset yet. Pair it above, under “Pairing”.",
+                    "Diese App ist noch nicht mit dieser Brille gekoppelt. Kopple sie oben unter „Kopplung“.")),
             check("team", L("Apple Developer Team", "Apple-Entwicklerteam"), facts.appleKey,
                   L("The team key is here: this headset gets certificates and profiles from Apple itself.",
                     "Der Team-Schlüssel ist da: Diese Brille holt Zertifikate und Profile selbst bei Apple."),

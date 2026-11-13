@@ -46,7 +46,10 @@ struct PanelScreen: View {
             ConnectionGate(section: $section) {
                 Form {
                     #if STANDALONE
-                    if client.isLocal, panelId == "setup" { AppleKeySetup() }
+                    if client.isLocal, panelId == "setup" {
+                        AppleKeySetup()
+                        PairingSetup()
+                    }
                     #endif
                     PanelSections(panelId: panelId)
                 }

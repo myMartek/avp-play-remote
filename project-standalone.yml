@@ -14,12 +14,24 @@ include:
 name: AVPPlayRemoteStandalone
 targets:
   AVPPlayRemote:
-    sources:
+    # Die Quellen der App, ohne ihre Info.plist: Diese Fassung hat eine eigene (erzeugt, nicht eingecheckt), weil
+    # sie im lokalen Netz außer den Macs auch den Kopplungsdienst der Brille sucht, auf der sie läuft.
+    sources:REPLACE:
+      - path: Sources
+        excludes:
+          - "Info.plist"
+      - path: Resources
       - path: Standalone/Engine
       - path: Standalone/Shared
       - path: Standalone/App
         excludes:
           - "*.entitlements"
+          - "Info.plist"
+    info:
+      path: Standalone/App/Info.plist
+      properties:
+        NSLocalNetworkUsageDescription: AVP Play Remote looks for AVP Play on the Macs in your network to show and install your games, and for the pairing service of this headset to install games without a Mac.
+        NSBonjourServices:REPLACE: [_avpplay._tcp, _remotepairing-manual-pairing._tcp]
     settings:
       base:
         SWIFT_ACTIVE_COMPILATION_CONDITIONS: "$(inherited) STANDALONE"

@@ -17,4 +17,5 @@ fastlane/
 Standalone/Vendor/lib/
 Standalone/Signer/target/
 Standalone/Tunnel/Info.plist
+Standalone/App/Info.plist
 AVPPlayRemoteStandalone.xcodeproj/
