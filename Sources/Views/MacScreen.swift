@@ -14,8 +14,8 @@ struct MacScreen: View {
                 }
                 if let mac = client.connectedMac, let server = client.server {
                     SwiftUI.Section(L("Connected", "Verbunden")) {
-                        LabeledContent("Mac", value: mac.name)
-                        LabeledContent("AVP Play", value: server.appVersion)
+                        LabeledContent(Place.text("Mac", L("Works on", "Arbeitet auf")), value: mac.name)
+                        LabeledContent(Place.text("AVP Play", "AVP Play Remote"), value: server.appVersion)
                         if let status = client.status {
                             LabeledContent(L("Installs on", "Installiert auf")) {
                                 if let device = status.deviceName {
@@ -28,12 +28,27 @@ struct MacScreen: View {
                                 Text(problem).foregroundStyle(.orange)
                             }
                         }
-                        Button(L("Check Again on the Mac", "Auf dem Mac neu prüfen"), systemImage: "arrow.clockwise") {
+                        Button(Place.text(L("Check Again on the Mac", "Auf dem Mac neu prüfen"), L("Check Again", "Neu prüfen")), systemImage: "arrow.clockwise") {
                             client.perform(.refresh, key: "refresh")
                         }
                         .disabled(client.status?.refreshing == true || client.busy.contains("refresh"))
                     }
                 }
+
+                #if STANDALONE
+                SwiftUI.Section {
+                    if client.isLocal {
+                        Label(L("Games are installed on this headset itself.", "Spiele werden auf dieser Brille selbst installiert."), systemImage: "checkmark.circle.fill")
+                    } else {
+                        Button(L("Work on This Headset", "Auf dieser Brille arbeiten"), systemImage: "visionpro") { client.startLocal() }
+                    }
+                } header: {
+                    Text(L("Without a Mac", "Ohne Mac"))
+                } footer: {
+                    Text(L("Downloads, builds, signs and installs games on this headset. What it needs for that is listed under “Setup”.",
+                           "Lädt, baut, signiert und installiert Spiele auf dieser Brille. Was dafür nötig ist, steht unter „Einrichtung“."))
+                }
+                #endif
 
                 SwiftUI.Section {
                     if client.demo {

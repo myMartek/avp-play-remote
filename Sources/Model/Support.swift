@@ -3,6 +3,15 @@ import Network
 import Security
 
 /// Texte stehen wie in AVP Play zweisprachig im Programm: Deutsch, wenn das System Deutsch spricht, sonst Englisch.
+/// Wo die Arbeit gerade geschieht: auf einem Mac, oder (im Modus „Auf dieser Brille“) auf der Brille selbst. Die
+/// wenigen Sätze der Seiten, die den Mac nennen, fragen hier nach.
+@MainActor
+enum Place {
+    static var local = false
+    /// Der Satz für den Mac, oder der für die Brille.
+    static func text(_ mac: String, _ here: String) -> String { local ? here : mac }
+}
+
 func L(_ english: String, _ german: String) -> String {
     Language.german ? german : english
 }

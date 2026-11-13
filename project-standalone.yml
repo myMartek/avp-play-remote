@@ -1,0 +1,62 @@
+# AVP Play Remote mit dem Teil „Auf dieser Brille“: Spiele ohne Mac installieren.
+#
+# project.yml bleibt die App, wie sie jedes Team bauen kann. Diese Datei setzt darauf auf und fügt hinzu, was nur
+# ein bezahltes Entwicklerteam bekommt und was fertige Bibliotheken braucht:
+#   - den Tunnel (eine Netzwerk-Erweiterung) samt Berechtigung,
+#   - den Quelltext unter Standalone/ und die Bibliotheken unter Standalone/Vendor/lib: libidevice_ffi.a,
+#     libkleptonld.a (Standalone/Translator mit Kleptons tools/klepton_ld.c) und probe_sign.o (Standalone/Signer).
+#     Sie werden noch von Hand gebaut; ein Skript dafür fehlt.
+#
+#   xcodegen generate --spec project-standalone.yml
+include:
+  - project.yml
+# Ein eigener Projektname, damit das eingecheckte AVPPlayRemote.xcodeproj bleibt, wie es ist.
+name: AVPPlayRemoteStandalone
+targets:
+  AVPPlayRemote:
+    sources:
+      - path: Standalone/Engine
+      - path: Standalone/Shared
+      - path: Standalone/App
+        excludes:
+          - "*.entitlements"
+    settings:
+      base:
+        SWIFT_ACTIVE_COMPILATION_CONDITIONS: "$(inherited) STANDALONE"
+        CODE_SIGN_ENTITLEMENTS: Standalone/App/Standalone.entitlements
+        SWIFT_INCLUDE_PATHS: "$(SRCROOT)/Standalone/Vendor/include/idevice $(SRCROOT)/Standalone/Vendor/include/Signer $(SRCROOT)/Standalone/Vendor/include/KleptonLD"
+        LIBRARY_SEARCH_PATHS: "$(inherited) $(SRCROOT)/Standalone/Vendor/lib/$(PLATFORM_NAME)"
+        # Die Geräteverbindung und der Übersetzer als Bibliotheken; der Signierer als ein Objekt, das nur seine
+        # zwei Funktionen zeigt (er bringt wie die Geräteverbindung Rusts Laufzeit mit, und zwei Kopien stoßen an).
+        OTHER_LDFLAGS: "$(inherited) -lidevice_ffi -lkleptonld $(SRCROOT)/Standalone/Vendor/lib/$(PLATFORM_NAME)/probe_sign.o -lbz2"
+    dependencies:
+      - target: AVPPlayRemoteTunnel
+      - sdk: NetworkExtension.framework
+      - sdk: SystemConfiguration.framework
+      - sdk: CFNetwork.framework
+  AVPPlayRemoteTunnel:
+    type: app-extension
+    platform: visionOS
+    sources:
+      - path: Standalone/Tunnel
+        excludes:
+          - "*.entitlements"
+    info:
+      path: Standalone/Tunnel/Info.plist
+      properties:
+        CFBundleDisplayName: AVP Play Remote Loopback
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.networkextension.packet-tunnel
+          NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).PacketTunnelProvider
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: io.github.mymartek.avpplay.remote.Tunnel
+        PRODUCT_NAME: AVPPlayRemoteTunnel
+        CODE_SIGN_STYLE: Automatic
+        TARGETED_DEVICE_FAMILY: "7"
+        APPLICATION_EXTENSION_API_ONLY: YES
+        CODE_SIGN_ENTITLEMENTS: Standalone/Tunnel/Tunnel.entitlements
+    dependencies:
+      - sdk: NetworkExtension.framework

@@ -38,6 +38,9 @@ struct ConnectionGate<Content: View>: View {
                     }
                 }
                 HStack(spacing: 16) {
+                    #if STANDALONE
+                    Button(L("Work on This Headset", "Auf dieser Brille arbeiten")) { client.startLocal() }
+                    #endif
                     Button(L("Try Without a Mac", "Ohne Mac ausprobieren")) { client.startDemo() }
                     Button(L("Show Macs", "Macs zeigen")) { section = .mac }
                     if !client.known.isEmpty {
@@ -74,7 +77,7 @@ struct StatusBanner: View {
         if let status = client.status, let text = status.setupProblem ?? status.deviceProblem {
             Label {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(status.setupProblem != nil ? L("On the Mac", "Auf dem Mac") : L("Vision Pro", "Vision Pro")).font(.headline)
+                    Text(status.setupProblem != nil ? Place.text(L("On the Mac", "Auf dem Mac"), L("Setup", "Einrichtung")) : L("Vision Pro", "Vision Pro")).font(.headline)
                     Text(text).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
                 }
             } icon: {
@@ -98,11 +101,23 @@ struct MacMenu: View {
                 Button(L("End the Demo", "Demo beenden"), systemImage: "xmark.circle") { client.stopDemo() }
                 Divider()
             }
+            #if STANDALONE
+            Button {
+                client.startLocal()
+            } label: {
+                if client.isLocal {
+                    Label(L("This Headset (without a Mac)", "Diese Brille (ohne Mac)"), systemImage: "checkmark")
+                } else {
+                    Label(L("This Headset (without a Mac)", "Diese Brille (ohne Mac)"), systemImage: "visionpro")
+                }
+            }
+            Divider()
+            #endif
             ForEach(client.known) { mac in
                 Button {
                     client.switchTo(mac)
                 } label: {
-                    if client.connectingMac?.serverId == mac.serverId {
+                    if !client.isLocal, client.connectingMac?.serverId == mac.serverId {
                         Label(mac.name, systemImage: "checkmark")
                     } else {
                         Text(mac.name)
@@ -112,13 +127,13 @@ struct MacMenu: View {
             Divider()
             Button(L("Pair or Connect Another Mac …", "Anderen Mac koppeln oder verbinden …"), systemImage: "plus") { section = .mac }
             if client.connectedMac != nil {
-                Button(L("Check Again on the Mac", "Auf dem Mac neu prüfen"), systemImage: "arrow.clockwise") {
+                Button(Place.text(L("Check Again on the Mac", "Auf dem Mac neu prüfen"), L("Check Again", "Neu prüfen")), systemImage: "arrow.clockwise") {
                     client.perform(.refresh, key: "refresh")
                 }
             }
         } label: {
             Label(client.connectedMac?.name ?? client.connectingMac?.name ?? L("No Mac", "Kein Mac"),
-                  systemImage: client.connectedMac != nil ? "laptopcomputer" : "laptopcomputer.slash")
+                  systemImage: client.isLocal ? "visionpro" : client.connectedMac != nil ? "laptopcomputer" : "laptopcomputer.slash")
                 .labelStyle(.titleAndIcon)
         }
     }
@@ -197,7 +212,7 @@ struct GameState {
             return
         }
         if let job, job.state == .queued {
-            text = L("Waiting on the Mac", "Wartet auf dem Mac"); symbol = "clock"; color = .secondary
+            text = Place.text(L("Waiting on the Mac", "Wartet auf dem Mac"), L("Waiting", "Wartet")); symbol = "clock"; color = .secondary
             return
         }
         switch game.onDevice {
@@ -206,7 +221,8 @@ struct GameState {
         case .otherSource: text = L("Other version installed", "Andere Fassung installiert"); symbol = "arrow.left.arrow.right.circle"; color = .secondary
         case .notInstalled, .unknown:
             if game.downloaded {
-                text = L("Ready on the Mac", "Bereit auf dem Mac"); symbol = "laptopcomputer"; color = .secondary
+                text = Place.text(L("Ready on the Mac", "Bereit auf dem Mac"), L("Files are on this headset", "Dateien liegen auf dieser Brille"))
+                symbol = Place.local ? "visionpro" : "laptopcomputer"; color = .secondary
             } else {
                 text = L("Not installed", "Nicht installiert"); symbol = "circle.dashed"; color = .secondary
             }

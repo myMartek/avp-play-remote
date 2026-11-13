@@ -68,6 +68,20 @@ final class RemoteClient {
     private(set) var localNetworkDenied = false
     /// Der Demo-Modus: ein erfundener Mac mit erfundenen Spielen (`Demo`).
     private(set) var demo = false
+    #if STANDALONE
+    /// Der Modus „Auf dieser Brille“: dieselben Seiten, aber was sie zeigen, kommt von der Brille selbst
+    /// (`LocalBackend`) statt von einem Mac – wie die Demo, nur echt.
+    private(set) var local = false
+    private var backend: LocalBackend?
+    #endif
+    /// Ob die Brille gerade allein arbeitet. In der Fassung ohne diesen Teil immer nein.
+    var isLocal: Bool {
+        #if STANDALONE
+        return local
+        #else
+        return false
+        #endif
+    }
     /// Öffnet das Blatt zum Koppeln.
     var pairingTarget: PairingTarget?
     /// Eine Meldung, die als Hinweis erscheint (Antwort des Macs auf eine Bitte).
@@ -91,7 +105,12 @@ final class RemoteClient {
         didSet { UserDefaults.standard.set(preferredId, forKey: "lastMac") }
     }
 
-    var connectedMac: KnownMac? { demo ? Demo.mac : link?.welcomed == true ? link?.mac : nil }
+    var connectedMac: KnownMac? {
+        #if STANDALONE
+        if local { return LocalBackend.mac }
+        #endif
+        return demo ? Demo.mac : link?.welcomed == true ? link?.mac : nil
+    }
     var connectingMac: KnownMac? { link?.mac }
 
     // MARK: Leben der App
@@ -105,6 +124,10 @@ final class RemoteClient {
             attempt = 0
             #if DEBUG
             if UserDefaults.standard.bool(forKey: "AVPRemoteDemo"), !demo { startDemo() }
+            #endif
+            #if STANDALONE
+            // Wer zuletzt auf der Brille selbst gearbeitet hat, ist beim nächsten Start wieder dort.
+            if UserDefaults.standard.bool(forKey: "AVPRemoteLocal"), !local, !demo { startLocal() }
             #endif
             #if DEBUG
             // Zum Testen: `-AVPRemoteConnect 127.0.0.1` verbindet wie eine eingetippte Adresse (mit
@@ -177,7 +200,7 @@ final class RemoteClient {
             }
         }
         // Noch nie gekoppelt und genau ein Mac im Netz: gleich nach dem Code fragen – einmal.
-        if !demo, known.isEmpty, macs.count == 1, pairingTarget == nil, !offeredPairing {
+        if !demo, !isLocal, known.isEmpty, macs.count == 1, pairingTarget == nil, !offeredPairing {
             offeredPairing = true
             pairingTarget = PairingTarget(name: macs[0].name, endpoint: macs[0].endpoint, pairPort: macs[0].pairPort)
             #if DEBUG
@@ -196,7 +219,7 @@ final class RemoteClient {
     /// Wählt einen gekoppelten Mac und verbindet: der bevorzugte, wenn er im Netz ist oder eine Adresse bekannt ist,
     /// sonst reihum die anderen.
     func connectAutomatically() {
-        guard active, !demo, link == nil, retryTask == nil else { return }
+        guard active, !demo, !isLocal, link == nil, retryTask == nil else { return }
         let reachable = known.filter { isFound($0) || $0.host != nil }
         guard !reachable.isEmpty else {
             state = .searching
@@ -215,6 +238,9 @@ final class RemoteClient {
     /// Zu einem anderen gekoppelten Mac wechseln.
     func switchTo(_ mac: KnownMac) {
         preferredId = mac.serverId
+        #if STANDALONE
+        leaveLocal()
+        #endif
         disconnect()
         retryTask?.cancel()
         retryTask = nil
@@ -394,11 +420,80 @@ final class RemoteClient {
         }
         busy.insert(key)
         Task {
+            #if STANDALONE
+            let error = local ? await backend?.handle(request) : await send(request)
+            #else
             let error = await send(request)
+            #endif
             busy.remove(key)
             if let error { message = error }
         }
     }
+
+    // MARK: Auf dieser Brille
+
+    #if STANDALONE
+    /// Schaltet auf die Brille selbst um. Eine bestehende Verbindung zu einem Mac endet dafür.
+    func startLocal() {
+        guard !local else { return }
+        retryTask?.cancel()
+        retryTask = nil
+        disconnect()
+        demo = false
+        local = true
+        Place.local = true
+        UserDefaults.standard.set(true, forKey: "AVPRemoteLocal")
+        pairingTarget = nil
+        filters = []
+        horizonPlusKnown = false
+        state = .connected
+        let backend = LocalBackend(client: self)
+        self.backend = backend
+        backend.start()
+        for id in openPanels.keys { panels[id] = backend.panel(id) }
+    }
+
+    func stopLocal() {
+        guard local else { return }
+        leaveLocal()
+        state = .searching
+        attempt = 0
+        connectAutomatically()
+    }
+
+    /// Verlässt die Brille als Arbeitsort, ohne schon etwas anderes zu verbinden.
+    private func leaveLocal() {
+        guard local else { return }
+        local = false
+        Place.local = false
+        UserDefaults.standard.set(false, forKey: "AVPRemoteLocal")
+        backend = nil
+        server = nil
+        games = []
+        status = nil
+        panels = [:]
+        covers = [:]
+    }
+
+    /// Nach einer Änderung an der Einrichtung: liest neu, was auf der Brille da ist.
+    func localRefresh() { perform(.refresh, key: "refresh") }
+
+    /// Die Brille meldet, was sie weiß – an derselben Stelle, an der sonst die Nachrichten des Macs ankommen.
+    func localPublish(server: RemoteServerInfo, games: [RemoteGame], status: RemoteStatus, onlineCatalog: Bool) {
+        guard local else { return }
+        self.server = server
+        self.games = games
+        self.status = status
+        self.onlineCatalog = onlineCatalog
+        guard let backend else { return }
+        for id in openPanels.keys { panels[id] = backend.panel(id) }
+    }
+
+    func localCover(gameId: String, key: String, image: UIImage) {
+        guard local else { return }
+        covers[gameId] = CoverEntry(key: key, image: image)
+    }
+    #endif
 
     // MARK: Demo
 
@@ -406,6 +501,9 @@ final class RemoteClient {
     func startDemo() {
         retryTask?.cancel()
         retryTask = nil
+        #if STANDALONE
+        leaveLocal()
+        #endif
         disconnect()
         demo = true
         pairingTarget = nil
@@ -439,6 +537,9 @@ final class RemoteClient {
     func openPanel(_ id: String) {
         openPanels[id, default: 0] += 1
         if demo { panels[id] = Demo.panel(id, games: games); return }
+        #if STANDALONE
+        if local { panels[id] = backend?.panel(id); return }
+        #endif
         guard openPanels[id] == 1, let link, link.welcomed else { return }
         link.channel.send(RemoteClientMessage(seq: nextSeq(), request: .openPanel(id: id)))
     }
@@ -487,6 +588,9 @@ final class RemoteClient {
             covers[game.id] = CoverEntry(key: key, image: image)
             return
         }
+        #if STANDALONE
+        if local { backend?.loadCover(game); return }
+        #endif
         guard let link, link.welcomed, !coverRequests.contains(key) else { return }
         coverRequests.insert(key)
         link.channel.send(RemoteClientMessage(seq: nextSeq(), request: .cover(gameId: game.id)))

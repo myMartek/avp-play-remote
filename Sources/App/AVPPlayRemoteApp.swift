@@ -21,9 +21,11 @@ struct RootView: View {
     @Environment(RemoteClient.self) private var client
     @State private var section: AppTab = RootView.startTab
 
-    var body: some View {
+    var body: some View { tabs }
+
+    private var tabs: some View {
         @Bindable var client = client
-        TabView(selection: $section) {
+        return TabView(selection: $section) {
             Tab(L("Games", "Spiele"), systemImage: "square.grid.2x2", value: AppTab.games) {
                 GamesScreen(section: $section)
             }
@@ -48,7 +50,7 @@ struct RootView: View {
         .sheet(item: $client.pairingTarget) { target in
             PairingSheet(target: target)
         }
-        .alert(client.demo ? "Demo" : L("The Mac says", "Der Mac meldet"), isPresented: Binding(get: { client.message != nil }, set: { if !$0 { client.message = nil } })) {
+        .alert(client.demo ? "Demo" : client.isLocal ? L("Note", "Hinweis") : L("The Mac says", "Der Mac meldet"), isPresented: Binding(get: { client.message != nil }, set: { if !$0 { client.message = nil } })) {
             Button("OK") { client.message = nil }
         } message: {
             Text(client.message ?? "")

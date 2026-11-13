@@ -10,3 +10,11 @@ Gemfile
 Gemfile.lock
 # Signing and store upload stay local.
 fastlane/
+
+# „Auf dieser Brille“: Die Kopfdateien der Bibliotheken gehören dazu (die Regel „vendor/“ oben träfe sie sonst);
+# die Bibliotheken selbst werden gebaut, nicht eingecheckt. Ein Skript dafür fehlt noch.
+!Standalone/Vendor/
+Standalone/Vendor/lib/
+Standalone/Signer/target/
+Standalone/Tunnel/Info.plist
+AVPPlayRemoteStandalone.xcodeproj/

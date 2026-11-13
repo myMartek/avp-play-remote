@@ -24,7 +24,7 @@ struct PanelSections: View {
                 SwiftUI.Section {
                     HStack(spacing: 12) {
                         ProgressView()
-                        Text(L("Asking the Mac …", "Der Mac wird gefragt …")).foregroundStyle(.secondary)
+                        Text(Place.text(L("Asking the Mac …", "Der Mac wird gefragt …"), L("Loading …", "Wird geladen …"))).foregroundStyle(.secondary)
                     }
                 }
             }
@@ -36,6 +36,7 @@ struct PanelSections: View {
 
 /// Eine ganze Seite als Formular – Einrichtung und Einstellungen.
 struct PanelScreen: View {
+    @Environment(RemoteClient.self) private var client
     @Binding var section: AppTab
     let panelId: String
     let title: String
@@ -43,7 +44,12 @@ struct PanelScreen: View {
     var body: some View {
         NavigationStack {
             ConnectionGate(section: $section) {
-                Form { PanelSections(panelId: panelId) }
+                Form {
+                    #if STANDALONE
+                    if client.isLocal, panelId == "setup" { AppleKeySetup() }
+                    #endif
+                    PanelSections(panelId: panelId)
+                }
             }
             .navigationTitle(title)
             .toolbar { ToolbarItem(placement: .topBarTrailing) { MacMenu(section: $section) } }

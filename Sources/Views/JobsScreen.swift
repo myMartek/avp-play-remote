@@ -16,7 +16,8 @@ struct JobsScreen: View {
                 let jobs = client.status?.jobs ?? []
                 if jobs.isEmpty {
                     ContentUnavailableView(L("No jobs yet", "Noch keine Aufträge"), systemImage: "list.bullet.clipboard",
-                                           description: Text(L("Installing or downloading a game creates a job on the Mac.", "Wer ein Spiel installiert oder lädt, legt auf dem Mac einen Auftrag an.")))
+                                           description: Text(Place.text(L("Installing or downloading a game creates a job on the Mac.", "Wer ein Spiel installiert oder lädt, legt auf dem Mac einen Auftrag an."),
+                                                                        L("Installing or downloading a game creates a job.", "Wer ein Spiel installiert oder lädt, legt einen Auftrag an."))))
                 } else {
                     List {
                         group(L("Running and waiting", "Läuft und wartet"), jobs.filter(\.active))
@@ -47,8 +48,10 @@ struct JobsScreen: View {
                     if let id = clearing?.id { client.perform(.clearJobs(kind: id), key: "clear") }
                 }
             } message: {
-                Text(L("Takes these jobs off the list on the Mac. Downloaded files and everything on the Vision Pro stay. What is running or waiting is never cleared.",
-                       "Nimmt diese Aufträge aus der Liste auf dem Mac. Geladene Dateien und alles auf der Vision Pro bleiben. Was läuft oder wartet, wird nie geleert."))
+                Text(Place.text(L("Takes these jobs off the list on the Mac. Downloaded files and everything on the Vision Pro stay. What is running or waiting is never cleared.",
+                                  "Nimmt diese Aufträge aus der Liste auf dem Mac. Geladene Dateien und alles auf der Vision Pro bleiben. Was läuft oder wartet, wird nie geleert."),
+                                L("Takes these jobs off the list. Downloaded files and everything on the Vision Pro stay. What is running or waiting is never cleared.",
+                                  "Nimmt diese Aufträge aus der Liste. Geladene Dateien und alles auf der Vision Pro bleiben. Was läuft oder wartet, wird nie geleert.")))
             }
         }
     }

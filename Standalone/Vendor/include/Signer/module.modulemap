@@ -1,0 +1,4 @@
+module ProbeSign {
+    header "probe_sign.h"
+    export *
+}
