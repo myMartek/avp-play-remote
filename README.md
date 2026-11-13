@@ -17,7 +17,10 @@ newest release from this repository, builds it with your own Apple team (like th
 Pro. With a free Apple team the app counts towards the three apps such a team may have on the device, and it has to
 be installed again every seven days, like the games.
 
-## Installing games without a Mac
+## Installing games without a Mac (experimental)
+
+**Experimental:** this is new. Not every game has been tried this way, and something may not work; installing from
+the Mac stays the tested way, and a game installed on the headset can be installed again from the Mac at any time.
 
 Since version 1.2 the app can also do the work itself: with *This Headset (without a Mac)* in the Mac menu it
 downloads a game from Meta, builds its app, signs it and installs it – on the Vision Pro, while the Mac is off. The
@@ -28,7 +31,7 @@ What you need:
 - **A paid Apple Developer Program membership.** The app reaches the headset's own installation service through a
   small loopback VPN of its own (a Network Extension), which a free team cannot have.
 - **AVP Play 1.12 or newer on a Mac, once.** On the page *AVP Play Remote*, switch on *Installing Games Without a
-  Mac* and install the app again. AVP Play then builds this part into it and hands over what only a Mac can provide:
+  Mac (Experimental)* and install the app again. AVP Play then builds this part into it and hands over what only a Mac can provide:
   the runtime of the toolchain, the recipes of the games, your Meta library and – each only if you say so – your
   Apple team key and your Meta sign-in.
 - **A team key for the App Store Connect API** (role *App Manager*). Enter it in AVP Play, or in the app under

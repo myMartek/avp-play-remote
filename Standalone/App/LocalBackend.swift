@@ -1619,6 +1619,12 @@ extension LocalBackend {
         let handedOver = L("AVP Play on your Mac hands it over when it installs AVP Play Remote.",
                            "AVP Play auf deinem Mac übergibt es, wenn es AVP Play Remote installiert.")
         return [
+            Section(id: "experimental", title: L("Experimental", "Experimentell"), items: [
+                Item(id: "experimental", kind: .text, title: "",
+                     detail: L("Installing games on the headset itself is new and experimental. Not every game has been tried this way, and something may not work. Installing from the Mac stays the tested way; a game installed here can be installed again from the Mac at any time.",
+                               "Spiele auf der Brille selbst zu installieren ist neu und experimentell. Nicht jedes Spiel wurde so ausprobiert, und es kann etwas nicht klappen. Die Installation vom Mac bleibt der erprobte Weg; ein hier installiertes Spiel lässt sich jederzeit vom Mac neu installieren."),
+                     style: .warning),
+            ]),
             Section(id: "refresh", title: nil, items: [
                 facts.refreshing ? Item(id: "refreshing", kind: .progress, title: L("Checking …", "Wird geprüft …"))
                     : Item(id: "refresh", kind: .action, title: L("Check Again", "Neu prüfen"),

@@ -106,9 +106,9 @@ struct MacMenu: View {
                 client.startLocal()
             } label: {
                 if client.isLocal {
-                    Label(L("This Headset (without a Mac)", "Diese Brille (ohne Mac)"), systemImage: "checkmark")
+                    Label(L("This Headset (without a Mac, experimental)", "Diese Brille (ohne Mac, experimentell)"), systemImage: "checkmark")
                 } else {
-                    Label(L("This Headset (without a Mac)", "Diese Brille (ohne Mac)"), systemImage: "visionpro")
+                    Label(L("This Headset (without a Mac, experimental)", "Diese Brille (ohne Mac, experimentell)"), systemImage: "visionpro")
                 }
             }
             Divider()

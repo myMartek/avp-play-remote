@@ -43,10 +43,10 @@ struct MacScreen: View {
                         Button(L("Work on This Headset", "Auf dieser Brille arbeiten"), systemImage: "visionpro") { client.startLocal() }
                     }
                 } header: {
-                    Text(L("Without a Mac", "Ohne Mac"))
+                    Text(L("Without a Mac (Experimental)", "Ohne Mac (experimentell)"))
                 } footer: {
-                    Text(L("Downloads, builds, signs and installs games on this headset. What it needs for that is listed under “Setup”.",
-                           "Lädt, baut, signiert und installiert Spiele auf dieser Brille. Was dafür nötig ist, steht unter „Einrichtung“."))
+                    Text(L("Downloads, builds, signs and installs games on this headset. What it needs for that is listed under “Setup”. This is experimental: it is new, not every game has been tried this way, and something may not work. Installing from the Mac stays the tested way.",
+                           "Lädt, baut, signiert und installiert Spiele auf dieser Brille. Was dafür nötig ist, steht unter „Einrichtung“. Das ist experimentell: Es ist neu, nicht jedes Spiel wurde so ausprobiert, und es kann etwas nicht klappen. Die Installation vom Mac bleibt der erprobte Weg."))
                 }
                 #endif
 
