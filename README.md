@@ -30,7 +30,7 @@ What you need:
 
 - **A paid Apple Developer Program membership.** The app reaches the headset's own installation service through a
   small loopback VPN of its own (a Network Extension), which a free team cannot have.
-- **AVP Play 1.12 or newer on a Mac, once.** On the page *AVP Play Remote*, switch on *Installing Games Without a
+- **AVP Play 1.10.16 or newer on a Mac, once.** On the page *AVP Play Remote*, switch on *Installing Games Without a
   Mac (Experimental)* and install the app again. AVP Play then builds this part into it and hands over what only a Mac can provide:
   the runtime of the toolchain, the recipes of the games, your Meta library and – each only if you say so – your
   Apple team key and your Meta sign-in.
