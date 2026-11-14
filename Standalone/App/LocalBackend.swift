@@ -1630,6 +1630,12 @@ extension LocalBackend {
                      detail: L("Installing games on the headset itself is new and experimental. Not every game has been tried this way, and something may not work. Installing from the Mac stays the tested way; a game installed here can be installed again from the Mac at any time.",
                                "Spiele auf der Brille selbst zu installieren ist neu und experimentell. Nicht jedes Spiel wurde so ausprobiert, und es kann etwas nicht klappen. Die Installation vom Mac bleibt der erprobte Weg; ein hier installiertes Spiel lässt sich jederzeit vom Mac neu installieren."),
                      style: .warning),
+                // Spiele aus Steam gibt es in diesem Modus nicht: Ihr Download braucht Valves Werkzeug, und ein Spiel wie Skyrim VR
+                // wird beim Bau erst übersetzt, wofür es Apples Compiler braucht. Beides hat nur der Mac.
+                Item(id: "needsMac", kind: .text, title: "",
+                     detail: L("Games from Steam (Half-Life: Alyx, Half-Life 2, Portal, Skyrim VR) are not in this list: only a Mac can fetch and build them. To install one from the headset, choose your Mac in the menu at the top; AVP Play on the Mac then does the work.",
+                               "Spiele aus Steam (Half-Life: Alyx, Half-Life 2, Portal, Skyrim VR) stehen nicht in dieser Liste: Laden und bauen kann sie nur ein Mac. Um eines von der Brille aus zu installieren, wähle oben im Menü deinen Mac; die Arbeit macht dann AVP Play auf dem Mac."),
+                     style: .secondary),
             ]),
             Section(id: "refresh", title: nil, items: [
                 facts.refreshing ? Item(id: "refreshing", kind: .progress, title: L("Checking …", "Wird geprüft …"))
