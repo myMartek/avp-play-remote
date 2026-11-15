@@ -41,10 +41,10 @@ What you need:
   tap *Pair* and enter the code the headset shows.
 
 **Games that are built on the Mac.** Minecraft: Java Edition (with Vivecraft) is not downloaded ready-made: AVP Play
-builds its parts on your Mac, which takes a compiler and about 45 minutes. The headset can never do that. It can
-install the game by itself once a Mac has built the parts and handed them over: on the Mac, on the page *AVP Play
-Remote*, switch on *Also hand over the game parts* (about 600 MB, copied only with your yes) and choose *Hand Over
-Now*. Until then the game's page here says what is missing – that it has to be built on the Mac first, or that the
+builds its parts on your Mac, which takes a compiler and about 50 minutes. The headset can never do that. It can
+install the game by itself once a Mac has built the parts and handed them over (AVP Play 1.10.17 or newer and this
+app 1.2.1 or newer): on the Mac, on the page *AVP Play Remote*, switch on *Also hand over the game parts* (about
+740 MB, copied only with your yes) and choose *Hand Over Now*. Until then the game's page here says what is missing – that it has to be built on the Mac first, or that the
 parts have to be handed over. Installing needs about 3.7 GB of free space on the headset for a moment. The game asks
 for its own account (a Microsoft account that owns Minecraft: Java Edition) at its first start; neither AVP Play nor
 this app signs in to Microsoft.

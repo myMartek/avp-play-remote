@@ -1,7 +1,7 @@
 import Foundation
 
 /// Spiele, deren Programm auf dem Mac GEBAUT wird, nicht geladen – das erste ist Minecraft: Java Edition mit
-/// Vivecraft. Der Bau braucht einen Compiler und etwa 45 Minuten; die Brille kann ihn nie selbst machen. Sie kann
+/// Vivecraft. Der Bau braucht einen Compiler und etwa 50 Minuten; die Brille kann ihn nie selbst machen. Sie kann
 /// ein solches Spiel aber installieren, sobald ein Mac die fertigen „Spielteile“ einmal übergeben hat: Dann setzt
 /// sie Vorlage und Spielteile zusammen (`FinishMacho`), signiert und installiert.
 ///
@@ -132,8 +132,8 @@ struct BuiltGame: Codable, Equatable, Sendable {
         case .ready:
             return nil
         case .needsMacBuild:
-            return L("\(title) has to be built on your Mac first: only a Mac can build the game's parts (about 45 minutes, once). Install it once with AVP Play on the Mac. Then, on the Mac under AVP Play Remote, switch on “Also hand over the game parts” and choose “Hand Over Now”. After that it can be installed here without the Mac.",
-                     "\(title) muss zuerst auf deinem Mac gebaut werden: Die Spielteile kann nur ein Mac bauen (etwa 45 Minuten, einmal). Installiere es einmal mit AVP Play am Mac. Schalte danach am Mac unter AVP Play Remote „Auch die Spielteile mitgeben“ ein und wähle „Jetzt übergeben“. Dann lässt es sich hier ohne den Mac installieren.")
+            return L("\(title) has to be built on your Mac first: only a Mac can build the game's parts (about 50 minutes, once). Install it once with AVP Play on the Mac. Then, on the Mac under AVP Play Remote, switch on “Also hand over the game parts” and choose “Hand Over Now”. After that it can be installed here without the Mac.",
+                     "\(title) muss zuerst auf deinem Mac gebaut werden: Die Spielteile kann nur ein Mac bauen (etwa 50 Minuten, einmal). Installiere es einmal mit AVP Play am Mac. Schalte danach am Mac unter AVP Play Remote „Auch die Spielteile mitgeben“ ein und wähle „Jetzt übergeben“. Dann lässt es sich hier ohne den Mac installieren.")
         case .needsHandover(let bytes):
             let size = bytes.map { L(" (about \(BuiltGame.megabytes($0)))", " (etwa \(BuiltGame.megabytes($0)))") } ?? ""
             return L("The game's parts are built on your Mac, but they are not on this headset yet\(size). On the Mac, under AVP Play Remote, switch on “Also hand over the game parts” and choose “Hand Over Now”.",

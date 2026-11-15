@@ -5,7 +5,7 @@ import Foundation
 /// `visionos/mktemplate.sh`. Darin liegt die App ohne das Spiel und `macho.json` – was dazukommt und wohin.
 ///
 /// Das Spiel selbst kommt aus einem zweiten Archiv, den „Spielteilen“: Die baut AVP Play auf dem Mac des Nutzers
-/// (etwa 45 Minuten, mit einem Compiler) und übergibt sie. Auf der Brille entsteht davon nichts; hier werden Vorlage
+/// (etwa 50 Minuten, mit einem Compiler) und übergibt sie. Auf der Brille entsteht davon nichts; hier werden Vorlage
 /// und Spielteile nur zusammengesetzt (`FinishMacho`), ohne APK, ohne Übersetzen.
 struct MachoTemplate {
     let app: URL
