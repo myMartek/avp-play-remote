@@ -1,9 +1,5 @@
 import Foundation
 
-struct FinishFailure: Error, CustomStringConvertible {
-    let description: String
-}
-
 /// Klepton's app template (visionos/mktemplate.sh), unpacked: the app with no game in it, and what the toolchain
 /// knows about games.
 struct Template {
@@ -311,23 +307,7 @@ enum Finish {
     }
 
     /// AVP Play's AppStamp.short: the game's version cut to three numbers ("1.40.8_7379" → "1.40.8").
-    static func shortVersion(_ name: String) -> String {
-        var tokens: [String] = [], current = ""
-        for character in name {
-            if character.isASCII, character.isNumber || character == "." {
-                current.append(character)
-            } else {
-                if !current.isEmpty { tokens.append(current) }
-                current = ""
-            }
-        }
-        if !current.isEmpty { tokens.append(current) }
-        for token in tokens {
-            let parts = token.split(separator: ".").map(String.init).prefix(3)
-            if !parts.isEmpty, parts.allSatisfy({ $0.count <= 9 }) { return parts.joined(separator: ".") }
-        }
-        return "1.0"
-    }
+    static func shortVersion(_ name: String) -> String { Stamp.short(name) }
 
     /// targets.py, ovrp_guest_version: the one NUL-delimited "1.<minor ≥ 20>.<patch>" in the game's libOVRPlugin.so.
     static func ovrPluginVersion(in folder: URL) -> String? {

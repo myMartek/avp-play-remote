@@ -22,6 +22,9 @@ import UIKit
 ///   recipes.json        die Rezepte von AVP Play für Spiele aus dem Meta-Store: welche Dateien ein Spiel braucht,
 ///                       wohin sie gehören, seine Sprachen und Zusatzinhalte
 ///   games/<App-ID>/     game.json und die Dateien eines Spiels, wenn der Mac eines gleich mitgibt
+///   built-games.json    Spiele, deren Programm auf dem Mac gebaut wird (Minecraft), und der Stand ihrer Spielteile;
+///                       dazu ihre Vorlage klepton-macho-<Ziel>-<Nummer>-<Commit>.zip und ein Bild für die Kachel.
+///                       Die Spielteile selbst liegen unter `Documents/parts` (siehe `BuiltGame`).
 @MainActor
 final class LocalBackend {
     static let mac = KnownMac(serverId: "this-headset", name: L("This Headset", "Diese Brille"), host: nil, port: nil, lastConnected: nil)
@@ -34,6 +37,8 @@ final class LocalBackend {
         .appendingPathComponent("handover")
     nonisolated static let logFile = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
         .appendingPathComponent("standalone.log")
+    /// „Documents“ der App: Hier legt der Mac die Spielteile ab (`Documents/parts/<Kennung>`), und hier bleiben sie.
+    nonisolated static let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
 
     /// Legt bei jedem Start die Datei `Documents/standalone.json` an. AVP Play übergibt nur einer Remote etwas, in
     /// deren Ordner sie liegt (`CompanionHandover.marker`): Eine Fassung, die die Übergabe nie liest, soll keine
@@ -43,6 +48,13 @@ final class LocalBackend {
         let facts: [String: Any] = ["handover": 1, "version": version]
         guard let data = try? JSONSerialization.data(withJSONObject: facts, options: [.sortedKeys]) else { return }
         try? data.write(to: handover.deletingLastPathComponent().appendingPathComponent("standalone.json"), options: .atomic)
+        // Ein zweites Kennzeichen: Diese Fassung kann auch Spiele installieren, deren Programm auf dem Mac gebaut wird
+        // (`BuiltGame`). Nur dann gibt AVP Play ihre Liste, ihre Vorlage und – mit Zustimmung – ihre Spielteile mit
+        // (`CompanionHandover.builtMarker`); einer älteren Fassung lägen sonst ein paar hundert Megabyte ungenutzt im Ordner.
+        let built: [String: Any] = ["built": 1, "version": version]
+        if let data = try? JSONSerialization.data(withJSONObject: built, options: [.sortedKeys]) {
+            try? data.write(to: handover.deletingLastPathComponent().appendingPathComponent("standalone-built.json"), options: .atomic)
+        }
     }
 
     /// Der Port, unter dem die Brille ihren Tunneldienst anbietet: aus der Übergabe, sonst der übliche.
@@ -144,7 +156,10 @@ final class LocalBackend {
         var done = 0
         var failure: String?
         var log: [String] = []
-        var gameId: String { "store-\(appId)" }
+        /// Ein Spiel, dessen Programm auf dem Mac gebaut wurde: `appId` ist dann seine Kennung („vivecraft“), keine
+        /// Nummer aus dem Meta-Store.
+        var built: Bool?
+        var gameId: String { built == true ? appId : "store-\(appId)" }
     }
 
     private weak var client: RemoteClient?
@@ -156,6 +171,9 @@ final class LocalBackend {
     private var prefix = "avpplay.dev.klepton.target"
     private var port: UInt16 = 49152
     private var library: [LibraryApp] = []
+    /// Spiele, deren Programm auf dem Mac gebaut wird, wie die Übergabe sie nennt – und die Vorlagen dafür, die hier liegen.
+    private var builtGames: [BuiltGame] = []
+    private var machoTemplates: [String] = []
     /// AVP Plays Rezepte, nach der App-ID im Meta-Store.
     private var recipes: [String: Recipe] = [:]
     /// Entwürfe für Spiele ohne Rezept: was Meta zuletzt für sie genannt hat.
@@ -235,7 +253,9 @@ final class LocalBackend {
                     }
                     try? files.removeItem(at: source)
                 } else {
-                    for kind in ["klepton-template-", "klepton-mods-"] where name.hasPrefix(kind) {
+                    // Die Vorlage eines auf dem Mac gebauten Spiels: je Ziel eine („klepton-macho-<Ziel>-…“).
+                    let kinds = ["klepton-template-", "klepton-mods-"] + (MachoTemplate.named(name).map { ["klepton-macho-\($0.target)-"] } ?? [])
+                    for kind in kinds where name.hasPrefix(kind) {
                         // Nur eine Vorlage jeder Art zur selben Zeit: die neu übergebene.
                         for old in (try? files.contentsOfDirectory(atPath: Self.home.path)) ?? [] where old.hasPrefix(kind) {
                             try? files.removeItem(at: Self.home.appendingPathComponent(old))
@@ -287,6 +307,75 @@ final class LocalBackend {
         for name in (try? files.contentsOfDirectory(atPath: Self.home.appendingPathComponent("drafts").path)) ?? [] where name.hasSuffix(".json") {
             if let draft = Self.read("drafts/\(name)", Recipe.self), (try? draft.validate()) != nil, let appId = draft.store.appId { drafts[appId] = draft }
         }
+        // Spiele, deren Programm auf dem Mac gebaut wird: die Liste aus der Übergabe, die Vorlagen, und was an
+        // Spielteilen unter „Documents/parts“ liegt.
+        builtGames = BuiltGame.read(Self.home.appendingPathComponent("built-games.json"))
+        machoTemplates = names.filter { MachoTemplate.named($0) != nil }
+        var parts = Self.documents.appendingPathComponent("parts", isDirectory: true)
+        if files.fileExists(atPath: parts.path) { try? parts.setResourceValues(values) }
+        for game in builtGames {
+            // Ältere Spielteile gehen, sobald neuere ganz da sind (ihre Notiz kommt zuletzt). Eine Datei, an der in der
+            // letzten Stunde geschrieben wurde, bleibt: Der Mac kopiert vielleicht gerade neuere, deren Notiz noch fehlt.
+            guard let here = game.partsHere(documents: Self.documents) else { continue }
+            let folder = BuiltGame.partsFolder(game.id, documents: Self.documents)
+            for name in (try? files.contentsOfDirectory(atPath: folder.path)) ?? [] where name.hasSuffix(".zip") && name != here.record.name {
+                let file = folder.appendingPathComponent(name)
+                let touched = (try? files.attributesOfItem(atPath: file.path))?[.modificationDate] as? Date ?? Date()
+                if Date().timeIntervalSince(touched) > 3600 { try? files.removeItem(at: file) }
+            }
+        }
+    }
+
+    private func builtGame(_ id: String) -> BuiltGame? { builtGames.first { $0.id == id } }
+
+    private func readiness(_ game: BuiltGame) -> BuiltGame.Readiness {
+        game.readiness(documents: Self.documents, home: Self.home, templates: machoTemplates)
+    }
+
+    /// Warum sich ein auf dem Mac gebautes Spiel hier gerade nicht installieren lässt. Es braucht weder die Anmeldung
+    /// bei Meta noch die Laufzeit-Vorlage der anderen Spiele noch den Übersetzer: nur Kopplung, Team-Schlüssel, seine
+    /// eigene Vorlage und seine Spielteile.
+    private func builtBlocker(_ game: BuiltGame) -> String? {
+        if let why = game.blocker(readiness(game)) { return why }
+        if !hasPairing { return L("The pairing with this headset is missing (see “Setup”).", "Die Kopplung mit dieser Brille fehlt (siehe „Einrichtung“).") }
+        if !hasAppleKey { return L("The Apple team key is missing (see “Setup”).", "Der Team-Schlüssel von Apple fehlt (siehe „Einrichtung“).") }
+        if activeJob(game.id) != nil { return L("A job for this game is already running.", "Für dieses Spiel läuft schon ein Auftrag.") }
+        return nil
+    }
+
+    private func builtOnDevice(_ game: BuiltGame) -> RemoteGame.OnDevice {
+        guard let app = installed[game.id] else { return installedChecked ? .notInstalled : .unknown }
+        // Ein Update ist ein neuer Bau mit einer neueren Toolchain oder eine neuere Fassung des Spiels – beides nur,
+        // wenn es hier auch gebaut werden kann; sonst bleibt es „installiert“, und die Seite sagt, was fehlt.
+        if case .ready(_, let template, _) = readiness(game), let now = MachoTemplate.named(template.lastPathComponent)?.version {
+            if let have = app.toolchain, have < now { return .update }
+            if let have = app.versionCode, have < game.versionCode { return .update }
+        }
+        return .current
+    }
+
+    private func builtCover(_ game: BuiltGame) -> URL { Self.home.appendingPathComponent("built-\(game.id)-cover.png") }
+
+    private func builtRemoteGame(_ game: BuiltGame) -> RemoteGame {
+        let ready = readiness(game)
+        var bytes: Int64 = 0
+        if let here = game.partsHere(documents: Self.documents) { bytes = here.record.size }
+        let trust: RemoteGame.Trust = switch game.playability {
+        case "verified": .verified
+        case "community": .community
+        case "incompatible": .incompatible
+        default: .untested
+        }
+        let cover = builtCover(game)
+        let stamp = ((try? FileManager.default.attributesOfItem(atPath: cover.path))?[.size] as? NSNumber)?.intValue
+        var isReady = false
+        if case .ready = ready { isReady = true }
+        // Nichts zu laden, kein Besitz, den hier jemand prüft: Das Spiel fragt beim ersten Start selbst nach seinem Konto.
+        return RemoteGame(id: game.id, title: game.title, trust: trust, onDevice: builtOnDevice(game), downloaded: isReady, owned: nil,
+                          source: nil, busy: activeJob(game.id) != nil, installBlocker: builtBlocker(game), canDownload: false,
+                          downloadBlocker: nil, downloadSize: nil, storeBytes: bytes, mixedReality: false, handTracking: false,
+                          favourite: favourites.contains(game.id), coverKey: stamp.map { "built-\(game.id)-\($0)" },
+                          builtWith: installed[game.id]?.toolchain.map { "Toolchain \($0)" })
     }
 
     /// Das Rezept eines Spiels: das von AVP Play, sonst der letzte Entwurf aus Metas Angaben.
@@ -502,7 +591,7 @@ final class LocalBackend {
                 .flatMap { try? JSONSerialization.jsonObject(with: $0) as? [String: String] }
             ids[name] = facts?["title"] ?? name
         }
-        let games = ids.map { remoteGame($0.key, title: $0.value) }
+        let games = ids.map { remoteGame($0.key, title: $0.value) } + builtGames.map(builtRemoteGame)
         let updatable = games.filter { $0.onDevice == .update && $0.installBlocker == nil }.map(\.id)
         func count(_ states: Set<RemoteJob.State>) -> Int { jobs.filter { states.contains($0.state) }.count }
         var clearable: [RemoteChoice] = []
@@ -551,6 +640,20 @@ final class LocalBackend {
 
     /// Holt das Titelbild eines Spiels: von der Seite des Meta-Stores, wie AVP Play es tut, sonst aus dem Katalog.
     func loadCover(_ game: RemoteGame) {
+        if let built = builtGame(game.id) {
+            // Das Bild eines auf dem Mac gebauten Spiels kommt mit der Übergabe (aus seinen eigenen Dateien gemacht).
+            guard let key = game.coverKey, !coverAsked.contains(key) else { return }
+            coverAsked.insert(key)
+            let file = builtCover(built), gameId = game.id
+            Task { [weak self] in
+                guard let image = (try? Data(contentsOf: file)).flatMap({ Self.shrunk($0) }) else { return }
+                await MainActor.run {
+                    CoverDisk.write(image.jpeg, key: key)
+                    self?.client?.localCover(gameId: gameId, key: key, image: image.image)
+                }
+            }
+            return
+        }
         guard let key = game.coverKey, let appId = appId(of: game.id), !coverAsked.contains(key) else { return }
         coverAsked.insert(key)
         coverWaiting.append((game.id, key, appId))
@@ -681,6 +784,8 @@ final class LocalBackend {
         let pairing = Self.home.appendingPathComponent("pairing.plist").path, port = port, prefix = prefix
         var named: [String: String] = [:]
         for (appId, entry) in catalog { if let target = entry.target, !target.isEmpty { named[target] = appId } }
+        // Ein auf dem Mac gebautes Spiel heißt wie sein Ziel in der Toolchain; geführt wird es unter seiner Kennung.
+        for game in builtGames { named[game.target] = game.id }
         do {
             try await Tunnel.start()
             let apps = try await Task.detached { try DeviceLink(address: "10.7.0.1", port: port, pairingFile: pairing).installedApps() }.value
@@ -702,6 +807,7 @@ final class LocalBackend {
     // MARK: Aufträge
 
     private func enqueue(_ gameId: String, kind: RemoteJob.Kind) -> String? {
+        if let game = builtGame(gameId) { return enqueueBuilt(game, kind: kind) }
         guard let appId = appId(of: gameId) else { return L("This game is not known here.", "Dieses Spiel ist hier nicht bekannt.") }
         let downloaded = Self.files(of: folder(appId)).contains { $0.kind == "APK" }
         let missingToken = L("The Meta sign-in is missing (see “Setup”).", "Die Meta-Anmeldung fehlt (siehe „Einrichtung“).")
@@ -734,6 +840,26 @@ final class LocalBackend {
         stamp.dateFormat = "yyyyMMdd-HHmmss"
         let id = "store-\(appId)-\(stamp.string(from: Date()))-\(UUID().uuidString.prefix(4).lowercased())"
         jobs.insert(Job(id: id, appId: appId, title: title(appId), kind: kind, state: .queued, created: Date(), updated: Date(), steps: steps), at: 0)
+        waiting.append(id)
+        saveJobs()
+        pump()
+        publish()
+        return nil
+    }
+
+    /// Ein auf dem Mac gebautes Spiel: Es gibt nur einen Schritt – aus Vorlage und Spielteilen die App machen und
+    /// installieren. Kein Konto, kein Download, keine Daten, die danach aufs Gerät müssten (sie stecken in der App).
+    private func enqueueBuilt(_ game: BuiltGame, kind: RemoteJob.Kind) -> String? {
+        guard kind == .install else {
+            return L("There is nothing to download for this game: its parts come from your Mac.", "Für dieses Spiel gibt es nichts zu laden: Seine Spielteile kommen von deinem Mac.")
+        }
+        if let blocker = builtBlocker(game) { return blocker }
+        let stamp = DateFormatter()
+        stamp.dateFormat = "yyyyMMdd-HHmmss"
+        let id = "\(game.id)-\(stamp.string(from: Date()))-\(UUID().uuidString.prefix(4).lowercased())"
+        var job = Job(id: id, appId: game.id, title: game.title, kind: .install, state: .queued, created: Date(), updated: Date(), steps: [.build])
+        job.built = true
+        jobs.insert(job, at: 0)
         waiting.append(id)
         saveJobs()
         pump()
@@ -791,7 +917,24 @@ final class LocalBackend {
     private func pump() {
         guard running == nil, !waiting.isEmpty else { return }
         let id = waiting.removeFirst()
-        guard let job = jobs.first(where: { $0.id == id }), let templateName else { return pump() }
+        guard let job = jobs.first(where: { $0.id == id }) else { return pump() }
+        if job.built == true {
+            // Ein auf dem Mac gebautes Spiel: seine eigene Vorlage und seine Spielteile, sonst nichts.
+            guard let game = builtGame(job.appId), case .ready(let parts, let template, _) = readiness(game),
+                  let record = game.partsHere(documents: Self.documents)?.record else {
+                let why = builtGame(job.appId).flatMap { $0.blocker(readiness($0)) }
+                    ?? L("This game is no longer in the handover from your Mac.", "Dieses Spiel steht nicht mehr in der Übergabe von deinem Mac.")
+                change(id) { $0.state = .stopped; $0.failure = why }
+                append(id, "    " + why)
+                saveJobs()
+                return pump()
+            }
+            change(id) { $0.state = .running; $0.done = 0 }
+            let plan = BuiltPlan(job: job, game: game, parts: parts, sha256: record.sha256, template: template, prefix: prefix, port: port)
+            start(job, id: id) { hooks in try await Self.runBuilt(plan, hooks) }
+            return
+        }
+        guard let templateName else { return pump() }
         change(id) { $0.state = .running; $0.done = 0 }
         var settings: [String: String] = ["KLRoomGuardDefault": roomMeasuring ? "1" : "0", "KLGameLanguageDefault": gameLanguage]
         var switches: [String] = []
@@ -810,6 +953,12 @@ final class LocalBackend {
                         target: recipes[appId]?.toolchain.target ?? catalog[appId]?.target, settings: settings, switches: switches,
                         buildExtra: buildExtra, installedBuild: installed[appId]?.build, recipe: recipe(appId), shipped: recipes[appId] != nil,
                         options: options(appId))
+        start(job, id: id) { hooks in try await Self.run(plan, hooks) }
+    }
+
+    /// Lässt die Arbeit eines Auftrags außerhalb des Hauptfadens laufen und hält am Ende fest, wie er ausging.
+    private func start(_ job: Job, id: String, _ work: @escaping @Sendable (Hooks) async throws -> InstalledGame?) {
+        let appId = job.appId
         let hooks = Hooks(
             line: { text in Task { @MainActor [weak self] in self?.append(id, "    " + text) } },
             step: { index in
@@ -827,7 +976,7 @@ final class LocalBackend {
             var cancelled = false
             var installedAs: InstalledGame?
             do {
-                installedAs = try await Self.run(plan, hooks)
+                installedAs = try await work(hooks)
             } catch is CancellationError {
                 cancelled = true
             } catch {
@@ -895,6 +1044,149 @@ final class LocalBackend {
 
     nonisolated private static func megabytes(_ bytes: Int64) -> String { String(format: "%.0f MB", Double(bytes) / 1_048_576) }
     nonisolated private static func gigabytes(_ bytes: Int64) -> String { String(format: "%.2f GB", Double(bytes) / 1_073_741_824) }
+
+    // MARK: Ein auf dem Mac gebautes Spiel
+
+    /// Was der Auftrag für ein auf dem Mac gebautes Spiel braucht.
+    struct BuiltPlan: Sendable {
+        let job: Job
+        let game: BuiltGame
+        /// Die Spielteile vom Mac und ihre Prüfsumme; die App ohne das Spiel aus der Toolchain.
+        let parts: URL
+        let sha256: String
+        let template: URL
+        let prefix: String
+        let port: UInt16
+    }
+
+    /// Das eigene Icon des Spiels als einfache Dateien, in den Größen, die auch die Spiele aus dem Store bekommen: für
+    /// eine Vorlage, in die keines kompiliert ist. Das erste Bild, das sich lesen lässt, gewinnt.
+    nonisolated private static func builtIcon(_ candidates: [Data]) -> (files: [String: Data], icons: [String]) {
+        guard let source = candidates.lazy.compactMap({ UIImage(data: $0) }).first(where: { $0.size.width > 0 && $0.size.height > 0 }) else { return ([:], []) }
+        var files: [String: Data] = [:], icons: [String] = []
+        let sizes: [(String, String, CGFloat)] = [("AppIcon60x60", "@2x.png", 120), ("AppIcon60x60", "@3x.png", 180), ("AppIcon76x76", "@2x~ipad.png", 152),
+                                                  ("AppIcon83.5x83.5", "@2x~ipad.png", 167), ("AppIcon512x512", "@2x.png", 1024)]
+        for (name, suffix, side) in sizes {
+            let format = UIGraphicsImageRendererFormat()
+            format.scale = 1
+            format.opaque = true
+            let data = UIGraphicsImageRenderer(size: CGSize(width: side, height: side), format: format).image { context in
+                // Das Icon des Spiels hat einen durchsichtigen Rand: auf dunklem Grund, in der Mitte, mit Luft.
+                UIColor(red: 0.11, green: 0.11, blue: 0.12, alpha: 1).setFill()
+                context.fill(CGRect(x: 0, y: 0, width: side, height: side))
+                let scale = side * 0.72 / max(source.size.width, source.size.height)
+                let fitted = CGSize(width: source.size.width * scale, height: source.size.height * scale)
+                source.draw(in: CGRect(x: (side - fitted.width) / 2, y: (side - fitted.height) / 2, width: fitted.width, height: fitted.height))
+            }.pngData()
+            guard let data else { continue }
+            files[name + suffix] = data
+            if !icons.contains(name) { icons.append(name) }
+        }
+        return (files, icons)
+    }
+
+    /// Installiert ein Spiel, dessen Programm auf dem Mac gebaut wurde: aus seiner Vorlage und seinen Spielteilen die
+    /// App zusammensetzen (`FinishMacho`, nach dem Vertrag der Vorlage), signieren, installieren.
+    ///
+    /// Hier wird nichts geladen und nichts übersetzt, und niemand wird nach dem Besitz gefragt: Meta kennt dieses Spiel
+    /// nicht, und nach seinem Konto fragt es beim ersten Start selbst. Auch kopiert wird danach nichts – die Dateien
+    /// des Spiels stecken in seiner App.
+    nonisolated private static func runBuilt(_ plan: BuiltPlan, _ hooks: Hooks) async throws -> InstalledGame? {
+        let manager = FileManager.default
+        let game = plan.game
+        let work = manager.temporaryDirectory.appendingPathComponent("standalone-work")
+        defer { try? manager.removeItem(at: work) }
+        try Task.checkCancellation()
+        hooks.step(0)
+        let quiet: (String) -> Void = { hooks.line($0.trimmingCharacters(in: .whitespaces)) }
+        func bar(_ share: Double?, _ text: String) { hooks.bars([RemoteProgress(value: share, text: text)]) }
+        let bundleID = "\(plan.prefix).\(game.target)"
+        let pairing = home.appendingPathComponent("pairing.plist").path
+
+        // 1. Die Spielteile: unversehrt angekommen, und passend zu dieser Vorlage – bevor ein Gigabyte geschrieben wird.
+        let contract = try MachoTemplate.contract(of: plan.template)
+        guard contract.target == game.target else {
+            throw FinishFailure(description: L("The game runtime handed over is for \(contract.target), not for \(game.target).",
+                                               "Die übergebene Spiel-Laufzeit ist für \(contract.target), nicht für \(game.target)."))
+        }
+        bar(nil, L("Checking the game's parts …", "Die Spielteile werden geprüft …"))
+        guard try Hashing.sha256(of: plan.parts) == plan.sha256.lowercased() else {
+            throw FinishFailure(description: L("The game's parts did not arrive whole (the checksum does not match). On the Mac, under AVP Play Remote, choose “Hand Over Now” again.",
+                                               "Die Spielteile sind nicht unversehrt angekommen (die Prüfsumme stimmt nicht). Wähle am Mac unter AVP Play Remote noch einmal „Jetzt übergeben“."))
+        }
+        let parts = try GameParts.inspect(plan.parts, for: contract)
+        hooks.line(L("Game parts from your Mac: \(BuiltGame.megabytes(ContentStore.fileSize(plan.parts) ?? 0)), checked. The app will have \(BuiltGame.megabytes(parts.bytes)).",
+                     "Spielteile von deinem Mac: \(BuiltGame.megabytes(ContentStore.fileSize(plan.parts) ?? 0)), geprüft. Die App wird \(BuiltGame.megabytes(parts.bytes)) groß."))
+        try Task.checkCancellation()
+
+        // 2. Platz: Die App liegt unterwegs ausgepackt, als Paket und beim Installationsdienst.
+        try await Tunnel.start()
+        let needed = BuiltGame.spaceNeeded(appBytes: parts.bytes)
+        let free = try DeviceLink(address: "10.7.0.1", port: plan.port, pairingFile: pairing).files().freeBytes()
+        guard Int64(free) > needed else {
+            throw FinishFailure(description: L("Not enough free space on this headset: installing \(game.title) needs \(BuiltGame.gigabytes(needed)) free, \(BuiltGame.gigabytes(Int64(free))) are.",
+                                               "Nicht genug freier Speicher auf dieser Brille: Für die Installation von \(game.title) müssen \(BuiltGame.gigabytes(needed)) frei sein, frei sind \(BuiltGame.gigabytes(Int64(free)))."))
+        }
+
+        // 3. Zusammensetzen.
+        let template = try MachoTemplate.open(plan.template, in: work.appendingPathComponent("template"))
+        hooks.line("Toolchain \(template.version) (\(template.commit))")
+        var request = FinishMacho.Request(bundleID: bundleID, versionName: game.versionName, versionCode: game.versionCode)
+        if !template.contract.iconCompiled {
+            let art = builtIcon(GameParts.iconCandidates(in: plan.parts, parts: parts, contract: template.contract))
+            (request.pictures, request.iconNames) = (art.files, art.icons)
+            hooks.line(art.icons.isEmpty ? L("No icon found in the game's files: the game gets no icon.", "Kein Icon in den Dateien des Spiels gefunden: Das Spiel bekommt kein Icon.")
+                       : L("Icon from the game's own files.", "Icon aus den eigenen Dateien des Spiels."))
+        }
+        let unpacking = Meter()
+        let built = try FinishMacho.run(request, template: template, parts: plan.parts, work: work.appendingPathComponent("finish"), log: quiet) { share in
+            if unpacking.moved(share) {
+                bar(share * 0.5, L("\(BuiltGame.megabytes(Int64(share * Double(parts.bytes)))) of \(BuiltGame.megabytes(parts.bytes)) unpacked",
+                                   "\(BuiltGame.megabytes(Int64(share * Double(parts.bytes)))) von \(BuiltGame.megabytes(parts.bytes)) ausgepackt"))
+            }
+        }
+        try Task.checkCancellation()
+
+        // 4. Signieren und packen: wie bei jedem Spiel, mit dem Zertifikat dieser Brille.
+        let state = home.appendingPathComponent("signing")
+        try manager.createDirectory(at: state, withIntermediateDirectories: true)
+        try SignCore.identity(api: AppleAPI(folder: home), state: state, bundleID: bundleID, log: quiet)
+        bar(0.5, L("Signing – the game's program is large, this takes a moment …", "Wird signiert – das Programm des Spiels ist groß, das dauert einen Moment …"))
+        let packing = Meter()
+        let signed = try SignCore.sign(root: built.root, bundleID: bundleID, wanted: template.entitlements, state: state, work: work.appendingPathComponent("sign"),
+                                       packed: { now in
+                                           let share = Double(now) / Double(max(parts.bytes, 1))
+                                           if packing.moved(share) { bar(0.6 + 0.2 * min(1, share), L("\(BuiltGame.megabytes(now)) packed", "\(BuiltGame.megabytes(now)) gepackt")) }
+                                       }, log: quiet)
+        // Die ausgepackte App wird nicht mehr gebraucht: Ihr Platz ist für das Kopieren und Installieren frei.
+        try? manager.removeItem(at: built.root)
+        try Task.checkCancellation()
+
+        // 5. Installieren.
+        bar(0.8, L("Installing on the Vision Pro …", "Wird auf der Vision Pro installiert …"))
+        hooks.line(L("Installing on the Vision Pro …", "Wird auf der Vision Pro installiert …"))
+        try await Tunnel.start()
+        let result: InstallCore.Installed
+        do {
+            result = try InstallCore.run(address: "10.7.0.1", port: plan.port, pairingFile: pairing, package: signed.package, bundleID: bundleID, log: quiet)
+        } catch let error where "\(error)".contains("PublicStaging") {
+            hooks.line(L("The connection to the headset's services broke while the package was copied. Trying once more.",
+                         "Die Verbindung zu den Diensten der Brille ist beim Kopieren des Pakets abgerissen. Ein zweiter Versuch folgt."))
+            try Task.checkCancellation()
+            try await Tunnel.start()
+            result = try InstallCore.run(address: "10.7.0.1", port: plan.port, pairingFile: pairing, package: signed.package, bundleID: bundleID, log: quiet)
+        }
+        if let signer = result.signer, signer != signed.signer {
+            throw FinishFailure(description: "the headset names \(signer) as the signer, not \(signed.signer)")
+        }
+        hooks.step(plan.job.steps.count)
+        hooks.line(L("Installed as \(bundleID), build \(result.version). Start it from the Home View.",
+                     "Installiert als \(bundleID), Build \(result.version). Starte es aus der Home-Ansicht."))
+        if let account = game.account {
+            hooks.line(BuiltGame.text(account.title) + L(": the game asks for it itself at its first start.", ": Danach fragt das Spiel beim ersten Start selbst."))
+        }
+        return InstalledGame(build: result.version, version: built.version)
+    }
 
     /// Die Arbeit eines Auftrags, Schritt für Schritt. Zurück kommt, als was das Spiel installiert ist (bei einem
     /// Auftrag, der nichts installiert: nichts).
@@ -1412,6 +1704,7 @@ extension LocalBackend {
         if id == "setup" { return RemotePanel(id: id, sections: setupSections()) }
         if id == "settings" { return RemotePanel(id: id, sections: settingsSections()) }
         if id.hasPrefix("job:"), let job = job(String(id.dropFirst(4))) { return RemotePanel(id: id, sections: jobSections(job)) }
+        if id.hasPrefix("game:"), let game = builtGame(String(id.dropFirst(5))) { return RemotePanel(id: id, sections: builtSections(game)) }
         if id.hasPrefix("game:"), let appId = appId(ofGame: String(id.dropFirst(5))) { return RemotePanel(id: id, sections: gameSections(appId)) }
         return nil
     }
@@ -1442,6 +1735,17 @@ extension LocalBackend {
         if panel.hasPrefix("job:") {
             let id = String(panel.dropFirst(4))
             return item == "resume" ? await handle(.resume(jobId: id)) : item == "cancel" ? await handle(.cancel(jobId: id)) : nil
+        }
+        if panel.hasPrefix("game:"), let game = builtGame(String(panel.dropFirst(5))) {
+            switch item {
+            case "favourite": toggleFavourite(game.id, on)
+            case "removeParts":
+                if activeJob(game.id) != nil { return L("A job for this game is running.", "Für dieses Spiel läuft ein Auftrag.") }
+                try? FileManager.default.removeItem(at: BuiltGame.partsFolder(game.id, documents: Self.documents))
+            default: break
+            }
+            republish()
+            return nil
         }
         if panel.hasPrefix("game:"), let appId = appId(ofGame: String(panel.dropFirst(5))) {
             switch item {
@@ -1569,6 +1873,59 @@ extension LocalBackend {
         return sections
     }
 
+    /// Die Seite eines Spiels, dessen Programm auf dem Mac gebaut wird: was man zum Spielen braucht, woher die
+    /// Spielteile kommen und ob sie hier sind, und was installiert ist.
+    private func builtSections(_ game: BuiltGame) -> [RemoteSection] {
+        let ready = readiness(game)
+        var sections: [RemoteSection] = [
+            Section(id: "mine", title: nil, items: [Item(id: "favourite", kind: .toggle, title: L("Favourite", "Favorit"), on: favourites.contains(game.id))]),
+        ]
+        if let account = game.account {
+            sections.append(Section(id: "game-account", title: BuiltGame.text(account.title),
+                                    items: account.notes.enumerated().map { Item(id: "game-account-\($0.offset)", kind: .text, title: "", detail: BuiltGame.text($0.element)) }))
+        }
+        var parts: [RemoteItem] = [Item(id: "parts", kind: .fact, title: L("Game parts", "Spielteile"), value: game.partsFact(ready))]
+        if let why = game.blocker(ready) {
+            parts.append(Item(id: "parts-missing", kind: .text, title: "", detail: why, style: .warning))
+        } else if case .ready(_, _, let bytes) = ready {
+            parts.append(Item(id: "parts-here", kind: .text, title: "",
+                              detail: L("Your Mac built the game's parts and handed them over. This headset only puts the app together, signs it and installs it – no download, and no Mac needed. That takes a minute or two and needs about \(BuiltGame.gigabytes(BuiltGame.spaceNeeded(appBytes: bytes * 17 / 12))) of free space for the moment.",
+                                        "Dein Mac hat die Spielteile gebaut und übergeben. Diese Brille setzt daraus nur die App zusammen, signiert und installiert sie – ohne Download und ohne Mac. Das dauert ein bis zwei Minuten und braucht für den Moment etwa \(BuiltGame.gigabytes(BuiltGame.spaceNeeded(appBytes: bytes * 17 / 12))) freien Speicher."),
+                              style: .secondary))
+        }
+        if game.partsHere(documents: Self.documents) != nil {
+            parts.append(Item(id: "removeParts", kind: .action, title: L("Remove the Game Parts from This Headset", "Spielteile von dieser Brille entfernen"), style: .destructive,
+                              confirm: L("Remove the game parts of \(game.title) from this headset? The installed game stays. To install or update it here again, your Mac has to hand the parts over once more.",
+                                         "Die Spielteile von \(game.title) von dieser Brille entfernen? Das installierte Spiel bleibt. Um es hier wieder zu installieren oder zu aktualisieren, muss dein Mac die Spielteile noch einmal übergeben.")))
+        }
+        sections.append(Section(id: "builder", title: L("Built on the Mac", "Wird auf dem Mac gebaut"),
+                                footer: L("The game's parts stay on this headset after the install, so that an update can be built here. You can remove them to free the space.",
+                                          "Die Spielteile bleiben nach der Installation auf dieser Brille, damit ein Update hier gebaut werden kann. Du kannst sie entfernen, um den Platz freizugeben."),
+                                items: parts))
+        let deviceText: String
+        if let app = installed[game.id] {
+            let built = app.toolchain.map { "Toolchain \($0)" } ?? "?"
+            deviceText = builtOnDevice(game) == .update
+                ? L("Version \(app.version) is installed, built with \(built). A newer build is possible.", "Fassung \(app.version) ist installiert, gebaut mit \(built). Ein neuerer Bau ist möglich.")
+                : L("Version \(app.version) is installed, built with \(built).", "Fassung \(app.version) ist installiert, gebaut mit \(built).")
+        } else if installedChecked {
+            deviceText = L("Not installed.", "Nicht installiert.")
+        } else {
+            deviceText = L("Not checked yet: “Check Again” under Setup looks at what is installed.", "Noch nicht geprüft: „Neu prüfen“ unter Einrichtung sieht nach, was installiert ist.")
+        }
+        sections.append(Section(id: "device", title: L("On the Vision Pro", "Auf der Vision Pro"),
+                                footer: L("Nothing is copied to the game after the install: its files are inside its app. Your sign-in and your worlds are kept in the game app; installing again keeps them, removing the app deletes them.",
+                                          "Nach der Installation wird nichts zum Spiel kopiert: Seine Dateien stecken in seiner App. Deine Anmeldung und deine Welten liegen in der Spiel-App; eine neue Installation behält sie, das Entfernen der App löscht sie."),
+                                items: [Item(id: "device", kind: .text, title: "", detail: deviceText)]))
+        sections.append(Section(id: "know", title: L("Good to Know", "Gut zu wissen"), items: [
+            Item(id: "owned", kind: .fact, title: L("Ownership", "Besitz"), value: game.account == nil ? L("Not checked here", "Wird hier nicht geprüft") : L("Sign-in in the game", "Anmeldung im Spiel")),
+            Item(id: "special", kind: .text, title: "",
+                 detail: L("Special app: neither a Meta Store title nor a Steam game. Nothing of the game is downloaded by this headset; what it installs was built on your own Mac.",
+                           "Sonderapp: weder ein Titel aus dem Meta-Store noch ein Steam-Spiel. Diese Brille lädt vom Spiel nichts herunter; was sie installiert, wurde auf deinem eigenen Mac gebaut.")),
+        ]))
+        return sections
+    }
+
     private func jobSections(_ job: Job) -> [RemoteSection] {
         let phase: String = switch job.state {
         case .running: L("Running", "Läuft")
@@ -1665,7 +2022,16 @@ extension LocalBackend {
                     "\(recipes.count) Rezepte von AVP Play sind da: Sie nennen für jedes Spiel die Dateien, Sprachen und Zusatzinhalte."),
                   L("Not here yet. Without them every game is installed in the newest version Meta offers, without languages to choose and without add-on content. ",
                     "Noch nicht da. Ohne sie wird jedes Spiel in der neuesten Fassung installiert, die Meta anbietet – ohne wählbare Sprachen und ohne Zusatzinhalte. ") + handedOver),
-        ]
+        ] + builtGames.map { game in
+            // Ein Spiel, dessen Programm auf dem Mac gebaut wird: ob seine Spielteile hier sind, und sonst, was zu tun ist.
+            let ready = readiness(game)
+            var bytes: Int64 = 0
+            if case .ready(_, _, let size) = ready { bytes = size }
+            return check("built-\(game.id)", game.title, game.blocker(ready) == nil,
+                         L("The game's parts from your Mac are here (\(BuiltGame.megabytes(bytes))): it can be installed on this headset without the Mac.",
+                           "Die Spielteile von deinem Mac sind da (\(BuiltGame.megabytes(bytes))): Es lässt sich auf dieser Brille ohne den Mac installieren."),
+                         game.blocker(ready) ?? "")
+        }
     }
 
     private func settingsSections() -> [RemoteSection] {

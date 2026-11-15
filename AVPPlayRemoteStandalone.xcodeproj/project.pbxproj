@@ -17,17 +17,20 @@
 		3B362DEB01BAAEEC22CE367C /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4BB6E76DF5CED86DB159131D /* NetworkExtension.framework */; };
 		4071E1D8785C9032ABD31D49 /* RemoteProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3D55E8D9CE1A787B058AC5E /* RemoteProtocol.swift */; };
 		41FB4D23C0E22EA859A090C9 /* StoreArt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974D8F4D3AF0950B9A9CF3D5 /* StoreArt.swift */; };
+		422CAD991BC90BE0F3FA2A70 /* FinishCommon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4745DEA73343D168F4AB5C03 /* FinishCommon.swift */; };
 		424156495AC0A0413F676E5D /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03546D4D7DEA1EFB3BFF9F9A /* CFNetwork.framework */; };
 		42E7E1A3668111D8038527C2 /* Support.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62454F4CFE1F52BA51F2E107 /* Support.swift */; };
 		437119866C18C0246D0AE2E5 /* PanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88B9F07FF0F8082AAA267AD1 /* PanelView.swift */; };
 		4B35F8E00A4AC7FD90A1D00A /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4BB6E76DF5CED86DB159131D /* NetworkExtension.framework */; };
 		50FEC900FC4B13AAF060C4C7 /* Pairing.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0B22A52A93DB0DF424A66E1 /* Pairing.swift */; };
+		57A6FD1AEB3D9A1D0859A2E3 /* FinishMacho.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914E30C668DB78E8B8A8202C /* FinishMacho.swift */; };
 		67B0B1888C1BDCACE833255E /* JobsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6495B4F18532A37A789E34 /* JobsScreen.swift */; };
 		6B264FE5EBA977BF7765CDEE /* PacketTunnelProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D0280F962EA39674108AF43 /* PacketTunnelProvider.swift */; };
 		6E072754383EFCF670C41BDA /* Finish.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD1794FEA4C31555E3A9E8B /* Finish.swift */; };
 		7425AC129D86D676A1FC990E /* AVPPlayRemoteTunnel.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = F57B469FBAA3985CCBF2B19D /* AVPPlayRemoteTunnel.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		75D9237B3BCD18A70A167107 /* LocalSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300D53D59843018923DC4456 /* LocalSupport.swift */; };
 		76144124E2AC78A01BFDF195 /* AssetFiles.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3D68F0A1FA5ADF29CA490B6 /* AssetFiles.swift */; };
+		765825CE2C81DEE5171C85D1 /* BuiltGames.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F3D947BCE39C2A9885BF1EA /* BuiltGames.swift */; };
 		7722BFF3F466C9DF14F20A2C /* PairingSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B64B2B25F2ED2B2BDDAA0A2 /* PairingSetup.swift */; };
 		86ABF64E8C1093A2F078249E /* HookPrepare.swift in Sources */ = {isa = PBXBuildFile; fileRef = 605194834FE6CA293CDEB00E /* HookPrepare.swift */; };
 		8B1FBE57D66113F80E74E70C /* Demo.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E5DC6C9A36C9424BA0FB4740 /* Demo.xcassets */; };
@@ -82,6 +85,7 @@
 		07900E08EFBE1D88CC5B2A6B /* Zip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Zip.swift; sourceTree = "<group>"; };
 		0A63B1D12EB0F969D76C7F54 /* StagePlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StagePlan.swift; sourceTree = "<group>"; };
 		0DB04AF5563A2D21B5E01ADD /* Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
+		0F3D947BCE39C2A9885BF1EA /* BuiltGames.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuiltGames.swift; sourceTree = "<group>"; };
 		108DF6BEC923A6F203448EAA /* MacScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacScreen.swift; sourceTree = "<group>"; };
 		300D53D59843018923DC4456 /* LocalSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalSupport.swift; sourceTree = "<group>"; };
 		337CB5B0652BF2D9AF2C05A2 /* Demo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Demo.swift; sourceTree = "<group>"; };
@@ -92,6 +96,7 @@
 		3E0F2857EF69012C8E87313F /* WorkshopBrowser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkshopBrowser.swift; sourceTree = "<group>"; };
 		406FCFE5EB46DACB53B993C2 /* FetchPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchPlan.swift; sourceTree = "<group>"; };
 		46FBAF2823D6D3AE8BFEA02B /* RemoteClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteClient.swift; sourceTree = "<group>"; };
+		4745DEA73343D168F4AB5C03 /* FinishCommon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinishCommon.swift; sourceTree = "<group>"; };
 		492E1C1F7EBD452490174DA0 /* GamesScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamesScreen.swift; sourceTree = "<group>"; };
 		4BB6E76DF5CED86DB159131D /* NetworkExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NetworkExtension.framework; path = System/Library/Frameworks/NetworkExtension.framework; sourceTree = SDKROOT; };
 		4CD1794FEA4C31555E3A9E8B /* Finish.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Finish.swift; sourceTree = "<group>"; };
@@ -106,6 +111,7 @@
 		87DD3E78378820E957C530CF /* MetaClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetaClient.swift; sourceTree = "<group>"; };
 		88B9F07FF0F8082AAA267AD1 /* PanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanelView.swift; sourceTree = "<group>"; };
 		8A6495B4F18532A37A789E34 /* JobsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobsScreen.swift; sourceTree = "<group>"; };
+		914E30C668DB78E8B8A8202C /* FinishMacho.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinishMacho.swift; sourceTree = "<group>"; };
 		974D8F4D3AF0950B9A9CF3D5 /* StoreArt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreArt.swift; sourceTree = "<group>"; };
 		A0B22A52A93DB0DF424A66E1 /* Pairing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pairing.swift; sourceTree = "<group>"; };
 		A3D68F0A1FA5ADF29CA490B6 /* AssetFiles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetFiles.swift; sourceTree = "<group>"; };
@@ -175,6 +181,8 @@
 				734EEB77F4AD5FDCAF7BE28F /* AXML.swift */,
 				A7444D513A3B2A4CFE925479 /* DeviceLink.swift */,
 				4CD1794FEA4C31555E3A9E8B /* Finish.swift */,
+				4745DEA73343D168F4AB5C03 /* FinishCommon.swift */,
+				914E30C668DB78E8B8A8202C /* FinishMacho.swift */,
 				605194834FE6CA293CDEB00E /* HookPrepare.swift */,
 				A0B22A52A93DB0DF424A66E1 /* Pairing.swift */,
 				7F9CDE1A918E2B9026EF9263 /* SignCore.swift */,
@@ -188,6 +196,7 @@
 			isa = PBXGroup;
 			children = (
 				C69E0B30897B3CB759E9987F /* AppleKeySetup.swift */,
+				0F3D947BCE39C2A9885BF1EA /* BuiltGames.swift */,
 				F639108DDD12D4D636B1825A /* LocalBackend.swift */,
 				300D53D59843018923DC4456 /* LocalSupport.swift */,
 				3B64B2B25F2ED2B2BDDAA0A2 /* PairingSetup.swift */,
@@ -411,12 +420,15 @@
 				BBDEC3A12432D01646E1F749 /* AppleAPI.swift in Sources */,
 				207EC4836E58A0F66E55E289 /* AppleKeySetup.swift in Sources */,
 				76144124E2AC78A01BFDF195 /* AssetFiles.swift in Sources */,
+				765825CE2C81DEE5171C85D1 /* BuiltGames.swift in Sources */,
 				C184A5F8CD8149D27EDDE4E0 /* Common.swift in Sources */,
 				C55AD3F5606A4987826278B3 /* ContentStore.swift in Sources */,
 				30A581160FBFAB7AE76D8555 /* Demo.swift in Sources */,
 				E5B288122591A4A70854E098 /* DeviceLink.swift in Sources */,
 				D2E075BC60C166801C6177BC /* FetchPlan.swift in Sources */,
 				6E072754383EFCF670C41BDA /* Finish.swift in Sources */,
+				422CAD991BC90BE0F3FA2A70 /* FinishCommon.swift in Sources */,
+				57A6FD1AEB3D9A1D0859A2E3 /* FinishMacho.swift in Sources */,
 				91212F0A720781824323024F /* GameDetail.swift in Sources */,
 				C68CA07FCE0F24607722C7EE /* GamesScreen.swift in Sources */,
 				248F11F065FEF9C1D98696CA /* Hashing.swift in Sources */,

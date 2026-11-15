@@ -121,9 +121,19 @@ enum SignCore {
 
     // MARK: this device's side
 
-    /// Signs the app in `root`/Payload with what `identity` left in `state`, and packs `root` into a package.
-    /// `wanted` is Klepton's entitlements file: the signature gets those of its entries the profile grants.
-    static func sign(root: URL, bundleID: String, wanted: URL?, state: URL, work: URL, log: @escaping (String) -> Void) throws -> Signed {
+    /// What `prepare` leaves ready for the signature.
+    struct Prepared {
+        let app: URL
+        /// The entitlements the main program is signed with (XML).
+        let entitlements: URL
+        let team: String
+        let build: String
+    }
+
+    /// Everything about a signature that is not the signing itself: the profile goes into the app, the one Info.plist
+    /// value that depends on the team is set, and the entitlements are worked out – Klepton's (`wanted`), as far as
+    /// the profile grants them.
+    static func prepare(root: URL, bundleID: String, wanted: URL?, profile profileFile: URL, work: URL, log: (String) -> Void) throws -> Prepared {
         let files = FileManager.default
         let payload = root.appendingPathComponent("Payload")
         guard let appName = try files.contentsOfDirectory(atPath: payload.path).first(where: { $0.hasSuffix(".app") }) else {
@@ -131,7 +141,7 @@ enum SignCore {
         }
         let app = payload.appendingPathComponent(appName)
 
-        let profileData = try Data(contentsOf: state.appendingPathComponent("profile.mobileprovision"))
+        let profileData = try Data(contentsOf: profileFile)
         let profile = try profilePlist(profileData)
         guard let team = (profile["TeamIdentifier"] as? [String])?.first, let granted = profile["Entitlements"] as? [String: Any] else {
             throw SignFailure(description: "the profile names no team or no entitlements")
@@ -172,16 +182,25 @@ enum SignCore {
         let entitlementsFile = work.appendingPathComponent("signed.entitlements")
         try files.createDirectory(at: work, withIntermediateDirectories: true)
         try PropertyListSerialization.data(fromPropertyList: entitlements, format: .xml, options: 0).write(to: entitlementsFile)
+        return Prepared(app: app, entitlements: entitlementsFile, team: team, build: build)
+    }
 
+    /// Signs the app in `root`/Payload with what `identity` left in `state`, and packs `root` into a package.
+    /// `wanted` is Klepton's entitlements file: the signature gets those of its entries the profile grants.
+    /// `packed` hears how many bytes of the app are in the package so far (a large game takes a while).
+    static func sign(root: URL, bundleID: String, wanted: URL?, state: URL, work: URL, packed: ((Int64) -> Void)? = nil,
+                     log: @escaping (String) -> Void) throws -> Signed {
+        let prepared = try prepare(root: root, bundleID: bundleID, wanted: wanted, profile: state.appendingPathComponent("profile.mobileprovision"),
+                                   work: work, log: log)
         let signer = try timed("signed on this device", log) {
             try rust {
-                probe_sign_app(app.path, state.appendingPathComponent("key.pem").path,
-                               state.appendingPathComponent("certificate.der").path, entitlementsFile.path, $0, $1)
+                probe_sign_app(prepared.app.path, state.appendingPathComponent("key.pem").path,
+                               state.appendingPathComponent("certificate.der").path, prepared.entitlements.path, $0, $1)
             }
         }
         let package = work.appendingPathComponent("signed.ipa")
-        try timed("package packed", log) { try Zip.pack(folder: root, to: package) }
-        return Signed(package: package, bundleID: bundleID, build: build,
+        try timed("package packed", log) { try Zip.pack(folder: root, to: package, written: packed) }
+        return Signed(package: package, bundleID: bundleID, build: prepared.build,
                       signer: signer.components(separatedBy: ", team ").first ?? signer)
     }
 

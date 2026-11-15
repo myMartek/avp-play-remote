@@ -40,6 +40,15 @@ What you need:
 - **Pairing with the headset**, in the app under *Setup*: open Settings › General › Remote Devices on the headset,
   tap *Pair* and enter the code the headset shows.
 
+**Games that are built on the Mac.** Minecraft: Java Edition (with Vivecraft) is not downloaded ready-made: AVP Play
+builds its parts on your Mac, which takes a compiler and about 45 minutes. The headset can never do that. It can
+install the game by itself once a Mac has built the parts and handed them over: on the Mac, on the page *AVP Play
+Remote*, switch on *Also hand over the game parts* (about 600 MB, copied only with your yes) and choose *Hand Over
+Now*. Until then the game's page here says what is missing – that it has to be built on the Mac first, or that the
+parts have to be handed over. Installing needs about 3.7 GB of free space on the headset for a moment. The game asks
+for its own account (a Microsoft account that owns Minecraft: Java Edition) at its first start; neither AVP Play nor
+this app signs in to Microsoft.
+
 What goes where:
 
 - The Meta sign-in stays in the app's keychain on your headset and is sent to Meta only, with the same rules as on
@@ -127,6 +136,22 @@ build/smoke <code> [host] [game-id]
 
 It pairs as its own remote ("Smoke test"), which you can remove in AVP Play afterwards. It only sends *install* for a
 game that AVP Play refuses anyway, unless you name a game id.
+
+`tools/headset-check` is the headset part's own code as a command for the Mac: the archive code, the finisher for a
+game built on the Mac (`Standalone/Engine/FinishMacho.swift`), the signing preparation and the signer, built from
+the same sources as the app. It runs a set of checks on made-up files, and it puts a real app together from a
+template and a game's parts, signs it and packs it, printing the time and the peak memory of each step:
+
+```sh
+tools/headset-check/build.sh                # needs Xcode and Rust; output in build/headset-check
+build/headset-check/headset-check check
+build/headset-check/headset-check finish <klepton-macho-….zip> <parts.zip> <work folder> \
+    --bundle-id <id> --version-name 26.3 --version-code 260301
+build/headset-check/headset-check sign <work folder> <klepton-macho-….zip> <folder with key.pem, certificate.der, profile.mobileprovision> \
+    --bundle-id <id>
+```
+
+It talks to no headset and not to Apple.
 
 Debug builds understand a few launch arguments for the simulator, where nothing can be tapped from a script:
 `-AVPRemoteTab games|updates|jobs|mac`, `-AVPRemoteGame <id>`, `-AVPRemoteConnect <host>` and

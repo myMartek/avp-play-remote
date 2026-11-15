@@ -80,7 +80,9 @@ struct GameDetail: View {
                     } label: {
                         HStack {
                             if client.busy.contains(downloadKey) { ProgressView().controlSize(.small) }
-                            Label(L("Download Only", "Nur herunterladen") + (game.downloadSize.map { " · \($0)" } ?? ""), systemImage: "arrow.down.to.line")
+                            // Ein Spiel, dessen Teile der Mac baut, hat nichts zu laden: Der Mac nennt den Knopf dann selbst.
+                            Label(game.prepareTitle ?? (L("Download Only", "Nur herunterladen") + (game.downloadSize.map { " · \($0)" } ?? "")),
+                                  systemImage: game.prepareTitle == nil ? "arrow.down.to.line" : "hammer")
                         }
                     }
                     .buttonStyle(.bordered)
