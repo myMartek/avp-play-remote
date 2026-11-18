@@ -195,15 +195,16 @@ struct GamesScreen: View {
     }
 
     /// Die Spiele nach Filtern und Suche, in der Reihenfolge des Macs: Geprüftes zuerst, dann was Nutzer bestätigen,
-    /// das Ungetestete, zuletzt was nicht läuft – jeweils nach der Zahl derer, die sagen, es läuft, dann nach Namen.
+    /// was teilweise funktioniert, das Ungetestete, zuletzt was nicht läuft – jeweils nach der Zahl derer, die sagen, es läuft, dann nach Namen.
     var visible: [RemoteGame] {
         let words = search.trimmingCharacters(in: .whitespaces).lowercased()
         let rank: (RemoteGame) -> Int = { game in
             switch game.trust {
             case .verified: return 0
             case .community: return 1
-            case .untested: return 2
-            case .incompatible: return 3
+            case .partial: return 2
+            case .untested: return 3
+            case .incompatible: return 4
             }
         }
         return client.games

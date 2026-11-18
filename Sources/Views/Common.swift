@@ -176,6 +176,7 @@ struct TrustBadge: View {
         switch trust {
         case .verified: return L("Verified", "Geprüft")
         case .community: return L("Community", "Von Nutzern bestätigt")
+        case .partial: return L("Works partly", "Funktioniert teilweise")
         case .untested: return L("Untested", "Ungetestet")
         case .incompatible: return L("Does not run", "Läuft nicht")
         }
@@ -184,6 +185,7 @@ struct TrustBadge: View {
         switch trust {
         case .verified: return "checkmark.seal.fill"
         case .community: return "person.2.fill"
+        case .partial: return "circle.lefthalf.filled"
         case .untested: return "questionmark.circle"
         case .incompatible: return "xmark.octagon.fill"
         }
@@ -192,6 +194,7 @@ struct TrustBadge: View {
         switch trust {
         case .verified: return .green
         case .community: return .teal
+        case .partial: return .orange
         case .untested: return .gray
         case .incompatible: return .red
         }

@@ -363,6 +363,7 @@ final class LocalBackend {
         let trust: RemoteGame.Trust = switch game.playability {
         case "verified": .verified
         case "community": .community
+        case "partial": .partial
         case "incompatible": .incompatible
         default: .untested
         }
@@ -535,6 +536,7 @@ final class LocalBackend {
         let trust: RemoteGame.Trust = switch entry?.status {
         case "verified": .verified
         case "community": .community
+        case "partial": .partial
         case "incompatible": .incompatible
         default: .untested
         }
@@ -1773,8 +1775,9 @@ extension LocalBackend {
         var sections: [RemoteSection] = [
             Section(id: "mine", title: nil, items: [Item(id: "favourite", kind: .toggle, title: L("Favourite", "Favorit"), on: info.favourite)]),
         ]
-        if let entry = info.entry, info.trust == .untested || info.trust == .incompatible, entry.works + entry.problems + entry.fails > 0 {
-            let title = info.trust == .incompatible ? L("Reported not to work", "Als nicht lauffähig gemeldet") : L("Users report that it works", "Nutzer melden, dass es läuft")
+        if let entry = info.entry, info.trust == .untested || info.trust == .incompatible || info.trust == .partial, entry.works + entry.problems + entry.fails > 0 {
+            let title = info.trust == .incompatible ? L("Reported not to work", "Als nicht lauffähig gemeldet")
+                : info.trust == .partial ? L("Works partly", "Funktioniert teilweise") : L("Users report that it works", "Nutzer melden, dass es läuft")
             sections.append(Section(id: "untested", title: title, items: [
                 Item(id: "reports", kind: .text, title: "",
                      detail: L("Reports from users: \(entry.works) say it works, \(entry.problems) report problems, \(entry.fails) say it does not start.",
@@ -2139,15 +2142,17 @@ extension LocalBackend {
         let trust: RemoteGame.Trust = switch entry?.status {
         case "verified": .verified
         case "community": .community
+        case "partial": .partial
         case "incompatible": .incompatible
         default: .untested
         }
-        // Die vier Sätze sind die von AVP Play (playabilityText).
+        // Die Sätze sind die von AVP Play (playabilityText).
         let playability: String = switch trust {
         case .verified: L("Verified: the project has tested this game on an Apple Vision Pro.", "Geprüft: Das Projekt hat dieses Spiel auf einer Apple Vision Pro getestet.")
         case .community: L("Community Verified: more users report that it runs than that it does not. The project has not tested it.",
                            "Von Nutzern bestätigt: Mehr Nutzer melden, dass es läuft, als dass es nicht läuft. Das Projekt hat es nicht getestet.")
         case .incompatible: L("Incompatible: more users report that it does not run than that it does.", "Inkompatibel: Mehr Nutzer melden, dass es nicht läuft, als dass es läuft.")
+        case .partial: L("Works partly: it runs, but not everything in it works yet – the note says what does and what does not.", "Funktioniert teilweise: Es läuft, aber noch nicht alles darin funktioniert – die Notiz sagt, was geht und was nicht.")
         case .untested: L("Untested: nobody has confirmed yet that this game runs. You can try it.", "Ungetestet: Noch hat niemand bestätigt, dass dieses Spiel läuft. Du kannst es versuchen.")
         }
         let deviceText: String
